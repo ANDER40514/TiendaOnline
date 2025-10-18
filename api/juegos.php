@@ -9,39 +9,51 @@ require_once "db.php";
 $method = $_SERVER['REQUEST_METHOD'];
 
 switch ($method) {
-case 'GET':
-    if (isset($_GET['id_juego'])) {
-        $id = intval($_GET['id_juego']);
-        $sql = "SELECT id_juego, titulo, descripcion, precio, consola, FechaInsercion, imagen 
-                FROM juego 
-                WHERE id_juego = $id";
+
+    /* =========================
+    GET: listar o mostrar
+    ========================== */
+    case 'GET':
+        // Ahora el parámetro correcto es 'id'
+        if (isset($_GET['id'])) {
+            $id = intval($_GET['id']);
+            $sql = "SELECT id_juego, titulo, descripcion, precio, consola, FechaInsercion, imagen 
+                    FROM juego 
+                    WHERE id_juego = $id";
+            $result = $conn->query($sql);
+
+            if ($result && $result->num_rows > 0) {
+                echo json_encode($result->fetch_assoc(), JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+            } else {
+                http_response_code(404);
+                echo json_encode(["error" => "Juego no encontrado"]);
+            }
+            $conn->close();
+            exit;
+        }
+
+        // ✅ Si no viene ID, listar todos los juegos
+        $sql = "SELECT id_juego, titulo, descripcion, precio, consola, FechaInsercion, imagen FROM juego";
         $result = $conn->query($sql);
 
-        if ($result && $result->num_rows > 0) {
-            echo json_encode($result->fetch_assoc(), JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-        } else {
-            echo json_encode(["mensaje" => "Juego no encontrado"]);
+        if (!$result) {
+            echo json_encode(["error_sql" => $conn->error]);
+            $conn->close();
+            exit;
         }
-        break;
-    }
 
-    // Si no viene ID, se listan todos
-    $sql = "SELECT id_juego, titulo, descripcion, precio, consola, FechaInsercion, imagen FROM juego";
-    $result = $conn->query($sql);
+        $juegos = [];
+        while ($row = $result->fetch_assoc()) {
+            $juegos[] = $row;
+        }
 
-    if (!$result) {
-        echo json_encode(["error_sql" => $conn->error]);
-        break;
-    }
+        echo json_encode($juegos, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        $conn->close();
+        exit;
 
-    $juegos = [];
-    while ($row = $result->fetch_assoc()) {
-        $juegos[] = $row;
-    }
-
-    echo json_encode($juegos, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-    break;
-
+    /* =========================
+    POST: insertar juego
+    ========================== */
     case 'POST':
         $data = json_decode(file_get_contents("php://input"), true);
 
@@ -54,7 +66,7 @@ case 'GET':
         $descripcion = $conn->real_escape_string($data['descripcion']);
         $precio = $conn->real_escape_string($data['precio']);
         $consola = $conn->real_escape_string($data['consola']);
-        $imagen = isset($data['imagen']) ? $conn->real_escape_string($data['imagen']) : 'default.jpg';
+        $imagen = isset($data['imagen']) ? $conn->real_escape_string($data['imagen']) : 'img/no-photo.jpg';
 
         $sql = "INSERT INTO juego (titulo, descripcion, precio, consola, imagen)
                 VALUES ('$titulo', '$descripcion', '$precio', '$consola', '$imagen')";
@@ -64,8 +76,12 @@ case 'GET':
         } else {
             echo json_encode(["error" => "Error al insertar: " . $conn->error]);
         }
-        break;
+        $conn->close();
+        exit;
 
+    /* =========================
+    PUT: actualizar juego
+    ========================== */
     case 'PUT':
         $data = json_decode(file_get_contents("php://input"), true);
 
@@ -96,8 +112,12 @@ case 'GET':
         } else {
             echo json_encode(["error" => "Error al actualizar: " . $conn->error]);
         }
-        break;
+        $conn->close();
+        exit;
 
+    /* =========================
+    DELETE: eliminar juego
+    ========================== */
     case 'DELETE':
         if (!isset($_GET['id'])) {
             echo json_encode(["error" => "Debe especificar el parámetro 'id' en la URL."]);
@@ -116,11 +136,12 @@ case 'GET':
         } else {
             echo json_encode(["error" => "Error al eliminar: " . $conn->error]);
         }
-        break;
+        $conn->close();
+        exit;
 
     default:
+        http_response_code(405);
         echo json_encode(["error" => "Método no permitido."]);
-        break;
+        $conn->close();
+        exit;
 }
-
-$conn->close();

@@ -32,6 +32,10 @@ include __DIR__ . '/../../includes/header.php';
         <label for="game-imagen" class="form__label" >Imagen:</label>
         <input type="text" name="imagen" id="game-imagen" class="form__input form__input--img" placeholder="URL de la ubicacion de la imagen...">
         
+        <div class="form__preview">
+            <img id="preview-img" src="../../assets/img/no-photo.jpg" alt="Preview del juego" style="max-width: 150px; border-radius: 8px; margin-top: 10px;">
+        </div>
+
         <button class="form__btn form__btn--save" type="submit" id="btn-save">Guardar</button>
         <button class="form__btn form__btn--cancel" type="button" id="btn-cancel">Cancelar</button>
     </form>
