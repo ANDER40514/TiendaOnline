@@ -1,0 +1,63 @@
+[
+    {
+        "text": "Inicio",
+        "href": "index.php",
+        "class": "navbar__items"
+    },
+    {
+        "text": "Catalogo",
+        "href": "#body",
+        "class": "navbar__items",
+        "sub-module": [
+            {
+                "text": "Articulos",
+                "href": "#inicio",
+                "class": "navbar__sub-items"
+            },
+            {
+                "text": "Ofertas",
+                "href": "#inicio",
+                "class": "navbar__sub-items"
+            },
+            {
+                "text": "Descuento",
+                "href": "#inicio",
+                "class": "navbar__sub-items"
+            }
+        ]
+    },
+    {
+        "text": "Informaciones",
+        "href": "#footer",
+        "class": "navbar__items",
+        "sub-module": [
+            {
+                "text": "Mision",
+                "href": "#inicio",
+                "class": "navbar__sub-items"
+            },
+            {
+                "text": "Vision",
+                "href": "#inicio",
+                "class": "navbar__sub-items"
+            },
+            {
+                "text": "Sobre Nosotros",
+                "href": "#inicio",
+                "class": "navbar__sub-items"
+            }
+        ]
+    },
+    {
+        "text": "Contactanos",
+        "href": "modules/contact/contact.php",
+        "class": "navbar__items",
+        "sub-module": []
+    },
+    {
+        "text": "Edición",
+        "href": "modules/admin-juegos/admin-juegos.php",
+        "class": "navbar__edit",
+        "sub-module": []
+    }
+]

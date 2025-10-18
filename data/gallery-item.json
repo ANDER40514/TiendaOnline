@@ -1,0 +1,71 @@
+[
+    {
+        "id": 1,
+        "class": "catalogo__card",
+        "title": "Mario Bros",
+        "tag": [
+            "Nintendo Switch"
+        ],
+        "img": "img/mario-card",
+        "description": "Acompaña a Mario en una emocionante aventura llena de plataformas, enemigos y desafíos en el Reino Champiñón. Ideal para todas las edades y perfecto para disfrutar en familia.",
+        "price": 1000.00
+    },
+    {
+        "id": 2,
+        "class": "catalogo__card",
+        "title": "Spider Man",
+        "tag": [
+            "PlayStation 4"
+        ],
+        "img": "img/spiderMan-card",
+        "description": "Vive la experiencia de ser Spider-Man en un mundo abierto lleno de acción, combates espectaculares y una historia envolvente en la ciudad de Nueva York.",
+        "price": 1000.00
+    },
+    {
+        "id": 3,
+        "class": "catalogo__card",
+        "title": "GTA 5",
+        "tag": [
+            "playStation 5"
+        ],
+        "img": "img/gta5-card",
+        "description": "Sumérgete en la ciudad de Los Santos y vive una historia llena de crimen, acción y libertad total en uno de los juegos de mundo abierto más exitosos de todos los tiempos.",
+        "price": 1000.00
+    },
+    {
+        "id": 4,
+        "class": "catalogo__card",
+        "title": "Forza MotorSport 7",
+        "tag": [
+            "Xbox Series S",
+            "playStation 5"
+        ],
+        "img": "img/forzaMotorSport-card",
+        "description": "Disfruta de la velocidad y la adrenalina con los mejores autos y circuitos del mundo. Gráficos realistas y una experiencia de conducción inigualable.",
+        "price": 1000.00
+    },
+    {
+        "id": 5,
+        "class": "catalogo__card",
+        "title": "Atomic Heart",
+        "tag": [
+            "PlayStation 4",
+            "PlayStation 5"
+        ],
+        "img": "img/atomicHeart-card",
+        "description": "Únete a Mario en nuevas aventuras, superando obstáculos y rescatando a la princesa en este clásico renovado para Nintendo Switch.",
+        "price": 1000.00
+    },
+    {
+        "id": 6,
+        "class": "catalogo__card",
+        "title": "God of War 3",
+        "tag": [
+            "PlayStation 5",
+            "PlayStation 4"
+        ],
+        "img": "img/godOfWar-card",
+        "description": "Acompaña a Kratos en su épica batalla contra los dioses del Olimpo en una historia llena de acción, mitología y combates impresionantes.",
+        "price": 1000.00
+    }
+]

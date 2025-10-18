@@ -1,0 +1,108 @@
+{
+	"brand": {
+		"title": "Tienda Online by Anderson"
+	},
+	"columns": [
+		{
+			"title": "Empresa",
+			"links": [
+				{
+					"text": "Sobre Nosotros",
+					"href": "#"
+				},
+				{
+					"text": "Pedidos en Linea",
+					"href": "#"
+				},
+				{
+					"text": "Contactanos",
+					"href": "#"
+				},
+				{
+					"text": "Blog",
+					"href": "#"
+				},
+				{
+					"text": "Vision",
+					"href": "#"
+				}
+			]
+		},
+		{
+			"title": "Consolas",
+			"links": [
+				{
+					"text": "Nintendo Switch",
+					"href": "#"
+				},
+				{
+					"text": "Steaam Deck",
+					"href": "#"
+				},
+				{
+					"text": "PlayStation 5",
+					"href": "#"
+				},
+				{
+					"text": "PlayStation 4",
+					"href": "#"
+				},
+				{
+					"text": "Xbox Series S",
+					"href": "#"
+				}
+			]
+		},
+		{
+			"title": "Catalogo",
+			"links": [
+				{
+					"text": "VideoJuegos",
+					"href": "#"
+				},
+				{
+					"text": "Ofertas",
+					"href": "#"
+				},
+				{
+					"text": "Puntos game",
+					"href": "#"
+				},
+				{
+					"text": "Descuentos",
+					"href": "#"
+				},
+				{
+					"text": "Estrenos",
+					"href": "#"
+				}
+			]
+		},
+		{
+			"title": "Anexos",
+			"links": [
+				{
+					"text": "Pedidos",
+					"href": "#"
+				},
+				{
+					"text": "Encargos",
+					"href": "#"
+				},
+				{
+					"text": "Comunidad",
+					"href": "#"
+				},
+				{
+					"text": "Soporte",
+					"href": "#"
+				},
+				{
+					"text": "Rebajas",
+					"href": "#"
+				}
+			]
+		}
+	],
+	"copyright": "2025 - © Anderson Castillo"
+}

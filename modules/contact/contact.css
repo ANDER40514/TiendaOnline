@@ -1,0 +1,101 @@
+:root {
+    --size-font: 16px;
+}
+
+/* Seccion Superior de la pagina */
+.contacto__title {
+    color: white;
+    font-size: 36px;
+    text-align: center;
+    margin-top: 25px;
+}
+
+.contacto__text {
+    color: white;
+    text-align: center;
+    margin-top: 10px;
+}
+
+
+/* Seccion Principal de la pagina - Formulario */
+.form {
+    background-color: #f2f2f2;
+    color: black;
+    display: block;
+    margin: 35px auto;
+    width: 1200px;
+    height: 600px;
+    text-align: center;
+    border-radius: 8px;
+    padding: 10px
+}
+
+.form__data {
+    width: inherit;    
+}
+
+.form__label {
+    display: block;
+    margin-top: 15px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    text-align: left;
+    margin-left: 120px
+}
+
+.form__textarea {
+    display: block;
+    margin: 10px auto;
+    width: 940px;
+    height: 150px;
+    font-size: var(--size-font);
+    padding: 10px;
+}
+
+.form__input {
+    width: 80%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: var(--size-font);
+}
+
+
+.form__btn-form {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: var(--size-font);
+    width: 250px;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.contact-form button[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+
+/* Alertas cuando el campo se encuentra vacio */
+#nameAlert,
+#emailAlert {
+    display: none;
+    color: #f2f2f2;
+    border: 1px solid red;
+    padding: 13px;
+    width: 950px;
+    margin: 10px auto;
+    font-weight: 600;
+    background-color: rgba(250, 6, 6, 0.671);
+    font-size: 13px;
+    border-radius: 5px;
+    text-align: left;
+    cursor: not-allowed
+}
+
+
