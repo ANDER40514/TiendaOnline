@@ -14,7 +14,6 @@ switch ($method) {
     GET: listar o mostrar
     ========================== */
     case 'GET':
-        // Ahora el parámetro correcto es 'id'
         if (isset($_GET['id'])) {
             $id = intval($_GET['id']);
             $sql = "SELECT id_juego, titulo, descripcion, precio, consola, FechaInsercion, imagen 
@@ -32,7 +31,7 @@ switch ($method) {
             exit;
         }
 
-        // ✅ Si no viene ID, listar todos los juegos
+        // Si no viene ID, listar todos los juegos
         $sql = "SELECT id_juego, titulo, descripcion, precio, consola, FechaInsercion, imagen FROM juego";
         $result = $conn->query($sql);
 

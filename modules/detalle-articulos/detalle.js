@@ -4,7 +4,7 @@
     // Función para obtener la URL correcta de la imagen o un placeholder
     function getImageUrl(card) {
         const posible = card.imagen || card.img || card.image || "";
-        // Si viene vacío, devuelve un placeholder local
+
         if (!posible) return BASE_URL + "assets/img/no-photo.jpg";
 
         // Si ya es una URL absoluta (http(s)://) devuélvela tal cual
@@ -16,7 +16,6 @@
         // Si la ruta ya empieza por 'img/' o '/img', mantenla; si no, asume que es 'img/...'
         if (!/^\/?img\//i.test(ruta)) ruta = "assets/img/" + ruta;
 
-        // Asegúrate de no duplicar BASE_URL si `ruta` ya empieza con '/'
         if (ruta.startsWith("/")) return window.location.origin + ruta;
 
         return BASE_URL + "assets/" + ruta;

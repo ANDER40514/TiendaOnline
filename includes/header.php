@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/config.php';
 
-// Aseguramos que BASE_URL siempre termine con "/"
+// BASE_URL siempre termine con "/"
 $baseUrl = rtrim(BASE_URL, '/') . '/';
 ?>
 
