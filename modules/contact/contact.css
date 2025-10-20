@@ -31,7 +31,7 @@
 }
 
 .form__data {
-    width: inherit;    
+    width: inherit;
 }
 
 .form__label {
@@ -97,5 +97,3 @@
     text-align: left;
     cursor: not-allowed
 }
-
-

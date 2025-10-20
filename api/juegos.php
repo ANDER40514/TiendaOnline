@@ -50,7 +50,7 @@ switch ($method) {
         $conn->close();
         exit;
 
-    /* =========================
+        /* =========================
     POST: insertar juego
     ========================== */
     case 'POST':
@@ -78,7 +78,7 @@ switch ($method) {
         $conn->close();
         exit;
 
-    /* =========================
+        /* =========================
     PUT: actualizar juego
     ========================== */
     case 'PUT':
@@ -114,7 +114,7 @@ switch ($method) {
         $conn->close();
         exit;
 
-    /* =========================
+        /* =========================
     DELETE: eliminar juego
     ========================== */
     case 'DELETE':

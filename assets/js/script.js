@@ -11,7 +11,6 @@
 	// Funciones helper
 	// =========================
 	const fetchJSON = (path) => {
-		// Si la ruta ya es absoluta (http:// o https://), úsala directamente
 		const url = /^(?:https?:)?\/\//i.test(path) ? path : BASE_URL + path;
 
 		return fetch(url)
@@ -72,7 +71,7 @@
 	}
 
 	// =========================
-	// Resolver imágenes
+	// Imágenes
 	// =========================
 	function getImageUrl(card) {
 		const posible = card.imagen || card.img || card.image || "";

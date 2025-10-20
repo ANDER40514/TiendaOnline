@@ -13,11 +13,11 @@
     background-color: #fff;
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     margin-bottom: 30px;
     display: flex;
     flex-direction: column;
-    margin-top: 10px; 
+    margin-top: 10px;
 }
 
 .form__title {
@@ -36,7 +36,8 @@
     color: black;
 }
 
-.form__input, .form__textarea {
+.form__input,
+.form__textarea {
     padding: 8px 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -88,7 +89,7 @@
     background-color: #fff;
     border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     color: black;
     margin-bottom: 15px;
 }
@@ -100,7 +101,8 @@
     align-items: center;
 }
 
-.table__filter, .table__sort {
+.table__filter,
+.table__sort {
     padding: 0.5rem;
     border-radius: 6px;
     border: 1px solid #ccc;
@@ -123,7 +125,7 @@
 .table__filter-input:focus {
     border-color: #007bff;
     outline: none;
-    box-shadow: 0 0 3px rgba(0,123,255,0.5);
+    box-shadow: 0 0 3px rgba(0, 123, 255, 0.5);
 }
 
 .table__img {
@@ -139,6 +141,10 @@
 .table__header {
     padding: 12px;
     text-align: left;
+}
+
+.table__head > .table__row:nth-child(1):hover {
+    background-color: #007bff;
 }
 
 .table__data {
@@ -165,16 +171,17 @@
 .table__btn--clear-filters {
     padding: 4px 10px;
     font-size: 0.85rem;
-    background-color: #ffc107;
+    background-color: #6c757d;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     display: block;
     margin-left: 10px;
+    color: #fff;
 }
 
 .table__btn--clear-filters:hover {
-    background-color: #e0a800;
+    background-color: #6c757dd9;
 }
 
 .table__btn {
