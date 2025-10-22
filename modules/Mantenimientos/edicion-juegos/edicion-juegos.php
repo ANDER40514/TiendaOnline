@@ -4,10 +4,10 @@ $pageJSON = [
     'navbar' => 'data/navbar.json',
     'footer' => 'data/footer.json'
 ];
-$extraCSS = ['modules/admin-juegos/admin-juegos.css'];
-$extraJS  = ['modules/admin-juegos/admin-juegos.js'];
+$extraCSS = ['modules/mantenimientos/edicion-juegos/edicion-juegos.css'];
+$extraJS  = ['modules/mantenimientos/edicion-juegos/edicion-juegos.js'];
 
-include __DIR__ . '/../../includes/header.php';
+include __DIR__ . '/../../../includes/header.php';
 ?>
 
 <main class="admin">
@@ -33,7 +33,7 @@ include __DIR__ . '/../../includes/header.php';
         <input type="text" name="imagen" id="game-imagen" class="form__input form__input--img" placeholder="URL de la ubicacion de la imagen...">
 
         <div class="form__preview">
-            <img id="preview-img" src="../../assets/img/no-photo.jpg" alt="Preview del juego" style="max-width: 150px; border-radius: 8px; margin-top: 10px;">
+            <img id="preview-img" src="../../../assets/img/no-photo.jpg" alt="Preview del juego" style="max-width: 150px; border-radius: 8px; margin-top: 10px;">
         </div>
 
         <button class="form__btn form__btn--save" type="submit" id="btn-save">Guardar</button>
@@ -60,7 +60,6 @@ include __DIR__ . '/../../includes/header.php';
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.0/dist/sweetalert2.all.min.js"></script>
-<script src="<?= BASE_URL ?>modules/admin-juegos/admin-juegos.js"></script>
 
 
-<?php include __DIR__ . '/../../includes/footer.php'; ?>
+<?php include __DIR__ . '/../../../includes/footer.php'; ?>

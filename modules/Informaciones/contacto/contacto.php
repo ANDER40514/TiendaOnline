@@ -1,7 +1,7 @@
 <?php
 $pageTitle = 'Contacto | Tienda Online';
-$extraCSS = ['modules/contacto/contacto.css', 'assets/css/style.css'];
-$extraJS = ['modules/contacto/contacto.js'];
+$extraCSS = ['modules/informaciones/contacto/contacto.css'];
+$extraJS = ['modules/informaciones/contacto/contacto.js'];
 
 $pageJSON = [
     'navbar' => 'data/navbar.json',
@@ -9,7 +9,7 @@ $pageJSON = [
     'footer' => 'data/footer.json'
 ];
 
-include __DIR__ . '/../../includes/header.php';
+include __DIR__ . '/../../../includes/header.php';
 ?>
 
 <section class="contacto" id="contacto">
@@ -41,4 +41,4 @@ include __DIR__ . '/../../includes/header.php';
     </form>
 </section>
 
-<?php include __DIR__ . '/../../includes/footer.php'; ?>
+<?php include __DIR__ . '/../../../includes/footer.php'; ?>

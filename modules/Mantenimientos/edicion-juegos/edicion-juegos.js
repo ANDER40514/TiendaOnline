@@ -45,8 +45,8 @@ document.addEventListener("DOMContentLoaded", () => {
             .map((j) => {
                 const imgSrc =
                     j.imagen && j.imagen.trim()
-                        ? `../../assets/${j.imagen}`
-                        : "../../assets/img/no-photo.jpg";
+                        ? `../../../assets/${j.imagen}`
+                        : "../../../assets/img/no-photo.jpg";
 
                 return `
                 <tr class="table__row">
@@ -101,8 +101,8 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("game-consola").value = juego.consola || "";
             document.getElementById("game-imagen").value = juego.imagen || "";
             previewImg.src = juego.imagen
-                ? `../../assets/${juego.imagen}`
-                : "../../assets/img/no-photo.jpg";
+                ? `../../../assets/${juego.imagen}`
+                : "../../../assets/img/no-photo.jpg";
 
             Swal.fire(
                 "Editando",
@@ -174,7 +174,7 @@ document.addEventListener("DOMContentLoaded", () => {
             await res.json();
 
             form.reset();
-            previewImg.src = "../../assets/img/no-photo.jpg";
+            previewImg.src = "../../../assets/img/no-photo.jpg";
             document.getElementById("game-id").value = "";
             Swal.fire("Guardado", "El juego se ha guardado correctamente", "success");
             cargarJuegos();
@@ -187,7 +187,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Cancelar
     btnCancel.addEventListener("click", () => {
         form.reset();
-        previewImg.src = "../../assets/img/no-photo.jpg";
+        previewImg.src = "../../../assets/img/no-photo.jpg";
         document.getElementById("game-id").value = "";
         Swal.fire("Cancelado", "Se ha limpiado el formulario", "info");
     });
@@ -195,7 +195,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Preview dinámica
     inputImg.addEventListener("input", () => {
         const url = inputImg.value.trim();
-        previewImg.src = url ? `../../${url}` : "../../assets/img/no-photo.jpg";
+        previewImg.src = url ? `../../../${url}` : "../../../assets/img/no-photo.jpg";
     });
 
     // Fila filtros BEM

@@ -97,3 +97,38 @@
     text-align: left;
     cursor: not-allowed
 }
+
+
+/* Estilos generales del modulo de Informaciones */
+.informacion {
+    background: linear-gradient(180deg, #0f1724 0%, #12263a 100%); /* dark-blue gradient */
+    color: #fff;
+    padding: 60px 18px;
+}
+
+.informacion__wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    background: rgba(255,255,255,0.96);
+    color: #111;
+    padding: 34px 28px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(2,6,23,0.3);
+}
+
+.informacion h1, .informacion h2 {
+    color: #0b2540;
+}
+
+.mision__lead, .vision__lead {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    margin-bottom: 18px;
+}
+
+.informacion ul { margin-left: 1.25rem; color: #222 }
+
+@media (max-width: 900px) {
+    .informacion__wrap { padding: 20px; margin: 0 12px }
+    .form { width: auto; }
+}

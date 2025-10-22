@@ -1,10 +1,10 @@
 <?php
 $pageTitle = "Tienda Online | Compra de videojuegos";
 
-$extraCSS = ['modules/compra-venta/compra-venta.css'];
-$extraJS  = ['modules/compra-venta/compra-venta.js'];
+$extraCSS = ['modules/mantenimientos/compra-venta/compra-venta.css'];
+$extraJS  = ['modules/mantenimientos/compra-venta/compra-venta.js'];
 
-include __DIR__ . '/../../includes/header.php';
+include __DIR__ . '/../../../includes/header.php';
 ?>
 
 <main class="compra">
@@ -81,5 +81,5 @@ include __DIR__ . '/../../includes/header.php';
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.0/dist/sweetalert2.all.min.js"></script>
 
 <?php
-include __DIR__ . '/../../includes/footer.php';
+include __DIR__ . '/../../../includes/footer.php';
 ?>

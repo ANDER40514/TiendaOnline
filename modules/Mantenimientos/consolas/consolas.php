@@ -1,11 +1,11 @@
 <?php
-$pageTitle = 'Admin - Consolas';
-$extraCSS = ['modules/consolas/consolas.css'];
+$pageTitle = 'Tienda Online | Consolas';
+$extraCSS = ['modules/mantenimientos/consolas/consolas.css'];
 $extraJS = [
     'https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js',
-    'modules/consolas/consolas.js'
+    'modules/mantenimientos/consolas/consolas.js'
 ];
-include __DIR__ . '/../../includes/header.php';
+include __DIR__ . '/../../../includes/header.php';
 ?>
 
 <main class="admin-consola">
@@ -48,4 +48,4 @@ include __DIR__ . '/../../includes/header.php';
     </aside>
 </main>
 
-<?php include __DIR__ . '/../../includes/footer.php'; ?>
+<?php include __DIR__ . '/../../../includes/footer.php'; ?>

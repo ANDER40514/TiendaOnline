@@ -24,7 +24,7 @@ if (empty($data['cliente']['nombre']) || empty($data['cliente']['email']) || emp
 }
 
 // Conectar a BD
-require_once __DIR__ . '/../../api/db.php';
+require_once __DIR__ . '/../../../api/db.php';
 
 $conn->begin_transaction();
 $messages = [];
@@ -87,7 +87,7 @@ try {
     $conn->commit();
 
     // Guardar copia de la orden en archivo (backup)
-    $purchasesFile = __DIR__ . '/../../data/purchases.json';
+    $purchasesFile = __DIR__ . '/../../../data/purchases.json';
     if (!is_dir(dirname($purchasesFile))) mkdir(dirname($purchasesFile), 0755, true);
     $backup = ['cliente' => $data['cliente'], 'items' => $data['items'], 'total' => isset($data['total']) ? $data['total'] : array_sum(array_map(function ($i) {
         return $i['precio'] * $i['cantidad'];
