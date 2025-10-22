@@ -1,7 +1,7 @@
 <?php
 $pageTitle = 'Contacto | Tienda Online';
-$extraCSS = ['modules/contact/contact.css','assets/css/style.css'];
-$extraJS = ['modules/contact/contact.js'];
+$extraCSS = ['modules/contacto/contacto.css', 'assets/css/style.css'];
+$extraJS = ['modules/contacto/contacto.js'];
 
 $pageJSON = [
     'navbar' => 'data/navbar.json',

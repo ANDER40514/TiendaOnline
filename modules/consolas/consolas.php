@@ -36,9 +36,9 @@ include __DIR__ . '/../../includes/header.php';
                 <h2 class="admin-consola__panel-title">Consola</h2>
             </header>
             <div class="admin-consola__panel-body">
-                <label class="admin-consola__label" > Código <input type="text" class="admin-consola__field admin-consola__field--code" placeholder="Ingresa el codigo del color..." /></label>
-                <label class="admin-consola__label" > Nombre <input type="text" class="admin-consola__field admin-consola__field--name" placeholder="Ingresa el nombre del color..." /></label>
-                <label class="admin-consola__label" > Color <input type="color" class="admin-consola__field admin-consola__field--color" value="#cccccc" /></label>
+                <label class="admin-consola__label"> Código <input type="text" class="admin-consola__field admin-consola__field--code" placeholder="Ingresa el codigo del color..." /></label>
+                <label class="admin-consola__label"> Nombre <input type="text" class="admin-consola__field admin-consola__field--name" placeholder="Ingresa el nombre del color..." /></label>
+                <label class="admin-consola__label"> Color <input type="color" class="admin-consola__field admin-consola__field--color" value="#cccccc" /></label>
             </div>
             <footer class="admin-consola__panel-actions">
                 <button class="admin-consola__save">Guardar</button>

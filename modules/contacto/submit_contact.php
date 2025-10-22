@@ -1,7 +1,7 @@
 <?php
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: /TiendaOnline/contact/contact.php');
+    header('Location: /TiendaOnline/contacto/contacto.php');
     exit;
 }
 
@@ -25,5 +25,3 @@ $logLine = sprintf("[%s] %s <%s> : %s\n", date('c'), $name, $email, $message);
 file_put_contents(__DIR__ . '/messages.log', $logLine, FILE_APPEND | LOCK_EX);
 header('Location: /TiendaOnline/contact/contact.php?sent=1');
 exit;
-
-?>

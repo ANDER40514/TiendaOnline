@@ -12,7 +12,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     let juegosGlobal = [];
-    let filtros = { id: "", titulo: "", descripcion: "", precio: "", consola: "" };
+    let filtros = {
+        id: "",
+        titulo: "",
+        descripcion: "",
+        precio: "",
+        consola: "",
+    };
     let debounceTimer;
 
     async function cargarJuegos() {
@@ -25,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
         } catch (err) {
             console.error("Error al consumir la API:", err);
             tableBody.innerHTML = `<tr><td colspan="7">Error cargando los juegos.</td></tr>`;
-            Swal.fire('Error', 'No se pudieron cargar los juegos', 'error');
+            Swal.fire("Error", "No se pudieron cargar los juegos", "error");
         }
     }
 
@@ -35,35 +41,49 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        tableBody.innerHTML = juegos.map(j => {
-            const imgSrc = j.imagen && j.imagen.trim()
-                ? `../../assets/${j.imagen}`
-                : "../../assets/img/no-photo.jpg";
+        tableBody.innerHTML = juegos
+            .map((j) => {
+                const imgSrc =
+                    j.imagen && j.imagen.trim()
+                        ? `../../assets/${j.imagen}`
+                        : "../../assets/img/no-photo.jpg";
 
-            return `
+                return `
                 <tr class="table__row">
                     <td class="table__data table__data--id">${j.id_juego}</td>
                     <td class="table__data table__data--titulo">${j.titulo}</td>
-                    <td class="table__data table__data--descripcion">${j.descripcion}</td>
-                    <td class="table__data table__data--precio">${parseFloat(j.precio || 0).toFixed(2)}</td>
-                    <td class="table__data table__data--consola">${j.consola}</td>
+                    <td class="table__data table__data--descripcion">${j.descripcion
+                    }</td>
+                    <td class="table__data table__data--precio">${parseFloat(
+                        j.precio || 0
+                    ).toFixed(2)}</td>
+                    <td class="table__data table__data--consola">${j.consola
+                    }</td>
                     <td class="table__data table__data--imagen">
-                        <img src="${imgSrc}" alt="${j.titulo}" class="table__img">
+                        <img src="${imgSrc}" alt="${j.titulo
+                    }" class="table__img">
                     </td>
                     <td class="table__data table__data--acciones">
-                        <button class="table__btn table__btn--edit" data-id="${j.id_juego}">Editar</button>
-                        <button class="table__btn table__btn--delete" data-id="${j.id_juego}">Eliminar</button>
+                        <button class="table__btn table__btn--edit" data-id="${j.id_juego
+                    }">Editar</button>
+                        <button class="table__btn table__btn--delete" data-id="${j.id_juego
+                    }">Eliminar</button>
                     </td>
                 </tr>
             `;
-        }).join("");
+            })
+            .join("");
 
-        document.querySelectorAll(".table__btn--edit").forEach(btn =>
-            btn.addEventListener("click", () => editarJuego(btn.dataset.id))
-        );
-        document.querySelectorAll(".table__btn--delete").forEach(btn =>
-            btn.addEventListener("click", () => eliminarJuego(btn.dataset.id))
-        );
+        document
+            .querySelectorAll(".table__btn--edit")
+            .forEach((btn) =>
+                btn.addEventListener("click", () => editarJuego(btn.dataset.id))
+            );
+        document
+            .querySelectorAll(".table__btn--delete")
+            .forEach((btn) =>
+                btn.addEventListener("click", () => eliminarJuego(btn.dataset.id))
+            );
     }
 
     // Editar
@@ -75,41 +95,50 @@ document.addEventListener("DOMContentLoaded", () => {
 
             document.getElementById("game-id").value = juego.id_juego || "";
             document.getElementById("game-titulo").value = juego.titulo || "";
-            document.getElementById("game-descripcion").value = juego.descripcion || "";
+            document.getElementById("game-descripcion").value =
+                juego.descripcion || "";
             document.getElementById("game-precio").value = juego.precio || "";
             document.getElementById("game-consola").value = juego.consola || "";
             document.getElementById("game-imagen").value = juego.imagen || "";
-            previewImg.src = juego.imagen ? `../../assets/${juego.imagen}` : "../../assets/img/no-photo.jpg";
+            previewImg.src = juego.imagen
+                ? `../../assets/${juego.imagen}`
+                : "../../assets/img/no-photo.jpg";
 
-            Swal.fire('Editando', 'Formulario rellenado con los datos del juego', 'info');
+            Swal.fire(
+                "Editando",
+                "Formulario rellenado con los datos del juego",
+                "info"
+            );
         } catch (err) {
             console.error(err);
-            Swal.fire('Error', 'No se pudo cargar el juego para editar', 'error');
+            Swal.fire("Error", "No se pudo cargar el juego para editar", "error");
         }
     }
 
     // Eliminar
     async function eliminarJuego(id) {
         Swal.fire({
-            title: '¿Deseas eliminar este juego?',
+            title: "¿Deseas eliminar este juego?",
             text: "Esta acción no se puede deshacer.",
-            icon: 'warning',
+            icon: "warning",
             showCancelButton: true,
-            confirmButtonColor: '#dc3545',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Sí, eliminar',
-            cancelButtonText: 'Cancelar'
+            confirmButtonColor: "#dc3545",
+            cancelButtonColor: "#6c757d",
+            confirmButtonText: "Sí, eliminar",
+            cancelButtonText: "Cancelar",
         }).then(async (result) => {
             if (!result.isConfirmed) return;
             try {
-                const res = await fetch(`${BASE_URL}api/juegos.php?id=${id}`, { method: "DELETE" });
+                const res = await fetch(`${BASE_URL}api/juegos.php?id=${id}`, {
+                    method: "DELETE",
+                });
                 if (!res.ok) throw new Error(`Error ${res.status}`);
                 await res.json();
-                Swal.fire('Eliminado', 'El juego ha sido eliminado', 'success');
+                Swal.fire("Eliminado", "El juego ha sido eliminado", "success");
                 cargarJuegos();
             } catch (err) {
                 console.error(err);
-                Swal.fire('Error', 'No se pudo eliminar el juego', 'error');
+                Swal.fire("Error", "No se pudo eliminar el juego", "error");
             }
         });
     }
@@ -123,18 +152,23 @@ document.addEventListener("DOMContentLoaded", () => {
             descripcion: document.getElementById("game-descripcion").value,
             precio: parseFloat(document.getElementById("game-precio").value),
             consola: document.getElementById("game-consola").value,
-            imagen: document.getElementById("game-imagen").value
+            imagen: document.getElementById("game-imagen").value,
         };
         if (id) data.id = id;
         const method = id ? "PUT" : "POST";
 
-        Swal.fire({ title: 'Guardando...', text: 'Espere un momento', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+        Swal.fire({
+            title: "Guardando...",
+            text: "Espere un momento",
+            allowOutsideClick: false,
+            didOpen: () => Swal.showLoading(),
+        });
 
         try {
             const res = await fetch(BASE_URL + "api/juegos.php", {
                 method,
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data)
+                body: JSON.stringify(data),
             });
             if (!res.ok) throw new Error(`Error ${res.status}`);
             await res.json();
@@ -142,11 +176,11 @@ document.addEventListener("DOMContentLoaded", () => {
             form.reset();
             previewImg.src = "../../assets/img/no-photo.jpg";
             document.getElementById("game-id").value = "";
-            Swal.fire('Guardado', 'El juego se ha guardado correctamente', 'success');
+            Swal.fire("Guardado", "El juego se ha guardado correctamente", "success");
             cargarJuegos();
         } catch (err) {
             console.error(err);
-            Swal.fire('Error', 'No se pudo guardar el juego', 'error');
+            Swal.fire("Error", "No se pudo guardar el juego", "error");
         }
     });
 
@@ -155,7 +189,7 @@ document.addEventListener("DOMContentLoaded", () => {
         form.reset();
         previewImg.src = "../../assets/img/no-photo.jpg";
         document.getElementById("game-id").value = "";
-        Swal.fire('Cancelado', 'Se ha limpiado el formulario', 'info');
+        Swal.fire("Cancelado", "Se ha limpiado el formulario", "info");
     });
 
     // Preview dinámica
@@ -172,7 +206,7 @@ document.addEventListener("DOMContentLoaded", () => {
         filterRow.classList.add("table__filters");
 
         const columnas = ["id_juego", "titulo", "descripcion", "precio", "consola"];
-        columnas.forEach(col => {
+        columnas.forEach((col) => {
             const th = document.createElement("th");
             const input = document.createElement("input");
             input.type = "text";
@@ -205,19 +239,23 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function aplicarFiltros() {
-        const filtrados = juegosGlobal.filter(j =>
-            (!filtros.id || j.id_juego.toString().includes(filtros.id)) &&
-            (!filtros.titulo || j.titulo.toLowerCase().includes(filtros.titulo)) &&
-            (!filtros.descripcion || j.descripcion.toLowerCase().includes(filtros.descripcion)) &&
-            (!filtros.precio || j.precio.toString().includes(filtros.precio)) &&
-            (!filtros.consola || j.consola.toLowerCase().includes(filtros.consola))
+        const filtrados = juegosGlobal.filter(
+            (j) =>
+                (!filtros.id || j.id_juego.toString().includes(filtros.id)) &&
+                (!filtros.titulo || j.titulo.toLowerCase().includes(filtros.titulo)) &&
+                (!filtros.descripcion ||
+                    j.descripcion.toLowerCase().includes(filtros.descripcion)) &&
+                (!filtros.precio || j.precio.toString().includes(filtros.precio)) &&
+                (!filtros.consola || j.consola.toLowerCase().includes(filtros.consola))
         );
         renderTabla(filtrados);
     }
 
     function limpiarFiltros() {
         filtros = { id: "", titulo: "", descripcion: "", precio: "", consola: "" };
-        document.querySelectorAll(".table__filters input").forEach(inp => inp.value = "");
+        document
+            .querySelectorAll(".table__filters input")
+            .forEach((inp) => (inp.value = ""));
         renderTabla(juegosGlobal);
     }
 

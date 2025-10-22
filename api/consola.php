@@ -8,7 +8,8 @@ require_once 'db.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
 
-function valid_hex($h) {
+function valid_hex($h)
+{
     return preg_match('/^#[0-9A-Fa-f]{6}$/', $h);
 }
 
@@ -45,8 +46,16 @@ switch ($method) {
 
     case 'POST':
         $data = json_decode(file_get_contents('php://input'), true);
-        if (!$data) { http_response_code(400); echo json_encode(['error' => 'JSON inválido']); exit; }
-        if (!isset($data['code'], $data['nombre'])) { http_response_code(400); echo json_encode(['error' => 'Faltan campos']); exit; }
+        if (!$data) {
+            http_response_code(400);
+            echo json_encode(['error' => 'JSON inválido']);
+            exit;
+        }
+        if (!isset($data['code'], $data['nombre'])) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Faltan campos']);
+            exit;
+        }
         $code = $conn->real_escape_string($data['code']);
         $nombre = $conn->real_escape_string($data['nombre']);
         $color = isset($data['consola_color']) && valid_hex($data['consola_color']) ? $conn->real_escape_string($data['consola_color']) : '#cccccc';
@@ -64,14 +73,31 @@ switch ($method) {
 
     case 'PUT':
         $data = json_decode(file_get_contents('php://input'), true);
-        if (!$data || !isset($data['id'])) { http_response_code(400); echo json_encode(['error' => 'Faltan campos']); exit; }
+        if (!$data || !isset($data['id'])) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Faltan campos']);
+            exit;
+        }
         $id = intval($data['id']);
         $fields = [];
         $params = [];
-        if (isset($data['code'])) { $fields[] = 'code=?'; $params[] = $conn->real_escape_string($data['code']); }
-        if (isset($data['nombre'])) { $fields[] = 'nombre=?'; $params[] = $conn->real_escape_string($data['nombre']); }
-        if (isset($data['consola_color'])) { $colorv = valid_hex($data['consola_color']) ? $data['consola_color'] : '#cccccc'; $fields[] = 'consola_color=?'; $params[] = $conn->real_escape_string($colorv); }
-        if (empty($fields)) { echo json_encode(['mensaje' => 'Nada que actualizar']); exit; }
+        if (isset($data['code'])) {
+            $fields[] = 'code=?';
+            $params[] = $conn->real_escape_string($data['code']);
+        }
+        if (isset($data['nombre'])) {
+            $fields[] = 'nombre=?';
+            $params[] = $conn->real_escape_string($data['nombre']);
+        }
+        if (isset($data['consola_color'])) {
+            $colorv = valid_hex($data['consola_color']) ? $data['consola_color'] : '#cccccc';
+            $fields[] = 'consola_color=?';
+            $params[] = $conn->real_escape_string($colorv);
+        }
+        if (empty($fields)) {
+            echo json_encode(['mensaje' => 'Nada que actualizar']);
+            exit;
+        }
         $sql = 'UPDATE consola SET ' . implode(', ', $fields) . ' WHERE id_consola=?';
         $stmt = $conn->prepare($sql);
         // bind params dynamically
@@ -82,22 +108,34 @@ switch ($method) {
         if ($stmt->execute()) {
             echo json_encode(['ok' => true]);
         } else {
-            http_response_code(500); echo json_encode(['error' => $conn->error]);
+            http_response_code(500);
+            echo json_encode(['error' => $conn->error]);
         }
-        $stmt->close(); $conn->close(); exit;
+        $stmt->close();
+        $conn->close();
+        exit;
 
     case 'DELETE':
-        if (!isset($_GET['id'])) { http_response_code(400); echo json_encode(['error' => 'id requerido']); exit; }
+        if (!isset($_GET['id'])) {
+            http_response_code(400);
+            echo json_encode(['error' => 'id requerido']);
+            exit;
+        }
         $id = intval($_GET['id']);
         $stmt = $conn->prepare('DELETE FROM consola WHERE id_consola=?');
         $stmt->bind_param('i', $id);
         if ($stmt->execute()) {
             echo json_encode(['ok' => true]);
-        } else { http_response_code(500); echo json_encode(['error' => $conn->error]); }
-        $stmt->close(); $conn->close(); exit;
+        } else {
+            http_response_code(500);
+            echo json_encode(['error' => $conn->error]);
+        }
+        $stmt->close();
+        $conn->close();
+        exit;
 
     default:
-        http_response_code(405); echo json_encode(['error' => 'Método no permitido']); exit;
+        http_response_code(405);
+        echo json_encode(['error' => 'Método no permitido']);
+        exit;
 }
-
-?>

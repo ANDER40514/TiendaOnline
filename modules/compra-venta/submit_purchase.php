@@ -66,7 +66,10 @@ try {
 
         // Elegir el primer valor no vacío como mensaje, o el último si todos son vacíos
         foreach ($collected as $c) {
-            if (strlen(trim((string)$c)) > 0) { $msg = $c; break; }
+            if (strlen(trim((string)$c)) > 0) {
+                $msg = $c;
+                break;
+            }
         }
         if ($msg === '' && !empty($collected)) {
             $msg = end($collected);
@@ -86,7 +89,9 @@ try {
     // Guardar copia de la orden en archivo (backup)
     $purchasesFile = __DIR__ . '/../../data/purchases.json';
     if (!is_dir(dirname($purchasesFile))) mkdir(dirname($purchasesFile), 0755, true);
-    $backup = ['cliente' => $data['cliente'], 'items' => $data['items'], 'total' => isset($data['total']) ? $data['total'] : array_sum(array_map(function($i){return $i['precio']*$i['cantidad'];}, $data['items'])), 'fecha' => date('c'), 'db_messages' => $messages];
+    $backup = ['cliente' => $data['cliente'], 'items' => $data['items'], 'total' => isset($data['total']) ? $data['total'] : array_sum(array_map(function ($i) {
+        return $i['precio'] * $i['cantidad'];
+    }, $data['items'])), 'fecha' => date('c'), 'db_messages' => $messages];
     // append safe
     $fp = fopen($purchasesFile, 'c+');
     if ($fp) {
@@ -105,12 +110,9 @@ try {
 
     echo json_encode(['ok' => true, 'messages' => $messages]);
     exit;
-
 } catch (Exception $e) {
     $conn->rollback();
     http_response_code(400);
     echo json_encode(['error' => $e->getMessage(), 'messages' => $messages]);
     exit;
 }
-
-?>

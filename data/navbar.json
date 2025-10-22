@@ -65,7 +65,7 @@
             },
             {
                 "text": "Formulario de Contacto",
-                "href": "modules/contact/contact.php",
+                "href": "modules/contacto/contacto.php",
                 "class": "navbar__sub-items"
             },
             {

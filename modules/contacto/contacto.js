@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const nameInput = document.getElementById('name');
     const emailInput = document.getElementById('email');
-    
+
     const nameAlert = document.getElementById('nameAlert');
     const emailAlert = document.getElementById('emailAlert');
     const btnEnviar = document.getElementById('btn-form');
