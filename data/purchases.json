@@ -1,0 +1,158 @@
+[
+    {
+        "cliente": {
+            "nombre": "Anderson",
+            "email": "anderson0205@outlook.es",
+            "direccion": "Calle Prueba 42",
+            "telefono": "809555555"
+        },
+        "items": [
+            {
+                "id": "4",
+                "titulo": "Forza MotorSport 7",
+                "precio": 1000,
+                "cantidad": 1
+            }
+        ],
+        "total": 1000,
+        "fecha": "2025-10-22T19:42:12+02:00",
+        "db_messages": [
+            {
+                "id": 4,
+                "message": "Compra realizada correctamente",
+                "monto": 1000
+            }
+        ]
+    },
+    {
+        "cliente": {
+            "nombre": "Anderson",
+            "email": "anderson0205@outlook.es",
+            "direccion": "Calle Prueba 42",
+            "telefono": "809590590"
+        },
+        "items": [
+            {
+                "id": "5",
+                "titulo": "Atomic Heart",
+                "precio": 1000,
+                "cantidad": 1
+            }
+        ],
+        "total": 1000,
+        "fecha": "2025-10-22T19:43:52+02:00",
+        "db_messages": [
+            {
+                "id": 5,
+                "message": "Compra realizada correctamente",
+                "monto": 1000,
+                "collected": [
+                    "Compra realizada correctamente"
+                ],
+                "sql": "CALL sp_compra(5, 1, 1000.00, 'Anderson', 'anderson0205@outlook.es', 'Calle Prueba 42', '809590590')"
+            }
+        ]
+    },
+    {
+        "cliente": {
+            "nombre": "Anderson",
+            "email": "anderson0205@outlook.es",
+            "direccion": "Calle Prueba 42",
+            "telefono": "809590590"
+        },
+        "items": [
+            {
+                "id": "3",
+                "titulo": "GTA 5",
+                "precio": 1000,
+                "cantidad": 5
+            },
+            {
+                "id": "5",
+                "titulo": "Atomic Heart",
+                "precio": 1000,
+                "cantidad": 1
+            }
+        ],
+        "total": 6000,
+        "fecha": "2025-10-22T19:44:32+02:00",
+        "db_messages": [
+            {
+                "id": 3,
+                "message": "Compra realizada correctamente",
+                "monto": 5000,
+                "collected": [
+                    "Compra realizada correctamente"
+                ],
+                "sql": "CALL sp_compra(3, 5, 5000.00, 'Anderson', 'anderson0205@outlook.es', 'Calle Prueba 42', '809590590')"
+            },
+            {
+                "id": 5,
+                "message": "Compra realizada correctamente",
+                "monto": 1000,
+                "collected": [
+                    "Compra realizada correctamente"
+                ],
+                "sql": "CALL sp_compra(5, 1, 1000.00, 'Anderson', 'anderson0205@outlook.es', 'Calle Prueba 42', '809590590')"
+            }
+        ]
+    },
+    {
+        "cliente": {
+            "nombre": "Pedro",
+            "email": "pedro@test.com",
+            "direccion": "",
+            "telefono": "590590590"
+        },
+        "items": [
+            {
+                "id": "1",
+                "titulo": "Mario Bros",
+                "precio": 5900,
+                "cantidad": 1
+            }
+        ],
+        "total": 5900,
+        "fecha": "2025-10-22T19:59:02+02:00",
+        "db_messages": [
+            {
+                "id": 1,
+                "message": "Compra realizada correctamente",
+                "monto": 5900,
+                "collected": [
+                    "Compra realizada correctamente"
+                ],
+                "sql": "CALL sp_compra(1, 1, 5900.00, 'Pedro', 'pedro@test.com', '', '590590590')"
+            }
+        ]
+    },
+    {
+        "cliente": {
+            "nombre": "Pedro Perez",
+            "email": "pedro2@test.com",
+            "direccion": "",
+            "telefono": ""
+        },
+        "items": [
+            {
+                "id": "6",
+                "titulo": "God of War 3",
+                "precio": 1000,
+                "cantidad": 1
+            }
+        ],
+        "total": 1000,
+        "fecha": "2025-10-22T20:00:06+02:00",
+        "db_messages": [
+            {
+                "id": 6,
+                "message": "Compra realizada correctamente",
+                "monto": 1000,
+                "collected": [
+                    "Compra realizada correctamente"
+                ],
+                "sql": "CALL sp_compra(6, 1, 1000.00, 'Pedro Perez', 'pedro2@test.com', '', '')"
+            }
+        ]
+    }
+]

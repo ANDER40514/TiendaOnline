@@ -123,6 +123,17 @@
 				const title = card.titulo || card.title || card.nombre || "Sin título";
 				const desc = card.descripcion || card.description || card.desc || "";
 				const price = parseFloat(card.precio ?? card.price ?? 0) || 0;
+				const consolaColor = card.consola_color || '#cccccc';
+				function textColorByBg(hex) {
+					if (!hex) return '#000';
+					const h = String(hex).replace('#','');
+					if (h.length !== 6) return '#000';
+					const r = parseInt(h.substr(0,2),16);
+					const g = parseInt(h.substr(2,2),16);
+					const b = parseInt(h.substr(4,2),16);
+					const yiq = ((r*299)+(g*587)+(b*114))/1000;
+					return yiq >= 128 ? '#000' : '#fff';
+				}
 
 				return `
 				<div class="gallery__item">
@@ -131,8 +142,8 @@
 						<h2 class="gallery__title-card">${title}</h2>
 						${(card.tag || card.tags || [])
 						.map((tag) => `<span class="gallery__tag-card">${tag}</span>`)
-						.join("") || ""
-					}
+						.join("") || ""}
+						<span class="gallery__tag-console" style="background:${consolaColor}; color:${textColorByBg(consolaColor)}; padding:6px 10px; border-radius:999px; margin-left:6px;">${card.consola || card.nombre || ''}</span>
 						<p class="gallery__description-card">${desc}</p>
 						<span class="gallery__price-card cossette-titre-bold">DOP $${price.toFixed(
 						2

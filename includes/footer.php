@@ -7,7 +7,12 @@
 <?php
 if (!empty($extraJS)) {
     foreach ($extraJS as $jsFile) {
-        echo '<script src="' . BASE_URL .  "assets/js/" . $jsFile . '"></script>' . PHP_EOL;
+        // allow absolute URLs (CDN) or relative project paths
+        if (preg_match('/^(?:https?:)?\/\//i', $jsFile)) {
+            echo '<script src="' . $jsFile . '"></script>' . PHP_EOL;
+        } else {
+            echo '<script src="' . BASE_URL . ltrim($jsFile, '/') . '"></script>' . PHP_EOL;
+        }
     }
 }
 ?>

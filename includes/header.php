@@ -39,12 +39,7 @@ $baseUrl = rtrim(BASE_URL, '/') . '/';
         console.log("PAGE_JSON ->", PAGE_JSON);
     </script>
 
-    <!-- JS específicos -->
-    <?php if (!empty($extraJS)) : ?>
-        <?php foreach ($extraJS as $jsFile) : ?>
-            <script src="<?= BASE_URL . ltrim($jsFile, '/') ?>"></script>
-        <?php endforeach; ?>
-    <?php endif; ?>
+    <!-- (page scripts are loaded at the end of the page in footer.php) -->
 
 
     <link rel="shortcut icon" href="<?= $baseUrl ?>assets/img/store_icon.ico" type="image/x-icon">
