@@ -87,10 +87,10 @@ body {
 
 /* Submenu */
 .navbar__submenu {
-    display: none;
+    display: block; /* keep in flow but hidden via visibility/opactiy to preserve hover area */
     position: absolute;
     left: 0;
-    top: calc(100% + 6px);
+    top: 100%; /* place directly below the parent to avoid gap while moving mouse */
     background: #222;
     padding: 8px 0;
     margin: 0;
@@ -99,12 +99,18 @@ body {
     z-index: 100;
     border-radius: 6px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    opacity: 0;
+    visibility: hidden;
+    transform-origin: top left;
+    transition: opacity .12s ease, visibility .12s ease, transform .12s ease;
 }
 
 
 .navbar__items:hover .navbar__submenu,
 .navbar__items:focus-within .navbar__submenu {
-    display: block;
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
 }
 
 .navbar__submenu .navbar__sub-items {
@@ -255,6 +261,18 @@ body {
     font-size: 12px;
     margin-right: 5px;
     border-radius: 4px;
+}
+
+/* Badge for console, colored dynamically via inline style from API */
+.gallery__tag-console {
+    display: inline-block;
+    font-size: 0.9rem;
+    padding: 6px 10px;
+    margin-left: 8px;
+    border-radius: 999px;
+    font-weight: 700;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    vertical-align: middle;
 }
 
 .gallery__description-card {

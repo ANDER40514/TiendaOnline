@@ -14,11 +14,13 @@ switch ($method) {
     GET: listar o mostrar
     ========================== */
     case 'GET':
-        if (isset($_GET['id'])) {
-            $id = intval($_GET['id']);
-            $sql = "SELECT id_juego, titulo, descripcion, precio, consola, FechaInsercion, imagen 
-                    FROM juego 
-                    WHERE id_juego = $id";
+    if (isset($_GET['id'])) {
+        $id = intval($_GET['id']);
+        // Usar la vista v_juego que ya hace el join entre juego y consola.
+        // Aliasamos los campos para mantener compatibilidad con el frontend (consola, consola_color, id_consola)
+        $sql = "SELECT v.id_juego, v.titulo, v.descripcion, v.precio, v.nombre AS consola, v.imagen, v.consola_color, v.id_consola, v.code as consola_code
+            FROM v_juego v
+            WHERE v.id_juego = $id";
             $result = $conn->query($sql);
 
             if ($result && $result->num_rows > 0) {
@@ -32,7 +34,8 @@ switch ($method) {
         }
 
         // Si no viene ID, listar todos los juegos
-        $sql = "SELECT id_juego, titulo, descripcion, precio, consola, FechaInsercion, imagen FROM juego";
+    $sql = "SELECT v.id_juego, v.titulo, v.descripcion, v.precio, v.nombre AS consola, v.imagen, v.consola_color, v.id_consola, v.code as consola_code
+        FROM v_juego v";
         $result = $conn->query($sql);
 
         if (!$result) {
@@ -43,6 +46,16 @@ switch ($method) {
 
         $juegos = [];
         while ($row = $result->fetch_assoc()) {
+            // validar consola_color: debe ser #rrggbb
+            if (isset($row['consola_color'])) {
+                $c = trim($row['consola_color']);
+                if (!preg_match('/^#[0-9A-Fa-f]{6}$/', $c)) {
+                    $c = '#cccccc';
+                }
+                $row['consola_color'] = $c;
+            } else {
+                $row['consola_color'] = '#cccccc';
+            }
             $juegos[] = $row;
         }
 
@@ -56,19 +69,26 @@ switch ($method) {
     case 'POST':
         $data = json_decode(file_get_contents("php://input"), true);
 
-        if (!isset($data['titulo'], $data['descripcion'], $data['precio'], $data['consola'])) {
-            echo json_encode(["error" => "Faltan campos obligatorios."]);
+        if (!isset($data['titulo'], $data['descripcion'], $data['precio'])) {
+            echo json_encode(["error" => "Faltan campos obligatorios: titulo, descripcion o precio."]);
             break;
         }
 
         $titulo = $conn->real_escape_string($data['titulo']);
         $descripcion = $conn->real_escape_string($data['descripcion']);
         $precio = $conn->real_escape_string($data['precio']);
-        $consola = $conn->real_escape_string($data['consola']);
+        $consola = isset($data['consola']) ? $conn->real_escape_string($data['consola']) : '';
         $imagen = isset($data['imagen']) ? $conn->real_escape_string($data['imagen']) : 'img/no-photo.jpg';
+        $consola_color = isset($data['consola_color']) ? $conn->real_escape_string($data['consola_color']) : null;
+        $id_consola = isset($data['id_consola']) ? intval($data['id_consola']) : 'NULL';
 
-        $sql = "INSERT INTO juego (titulo, descripcion, precio, consola, imagen)
-                VALUES ('$titulo', '$descripcion', '$precio', '$consola', '$imagen')";
+        // Construir INSERT incluyendo campos opcionales
+        $fields = ['titulo', 'descripcion', 'precio', 'consola', 'imagen'];
+        $values = ["'$titulo'", "'$descripcion'", "'$precio'", "'$consola'", "'$imagen'"];
+        if ($consola_color !== null) { $fields[] = 'consola_color'; $values[] = "'$consola_color'"; }
+        if ($id_consola !== 'NULL') { $fields[] = 'id_consola'; $values[] = $id_consola; }
+
+        $sql = "INSERT INTO juego (" . implode(',', $fields) . ") VALUES (" . implode(',', $values) . ")";
 
         if ($conn->query($sql)) {
             echo json_encode(["mensaje" => "Juego insertado correctamente.", "id" => $conn->insert_id]);
@@ -92,10 +112,11 @@ switch ($method) {
         $id_juego = intval($data['id']);
         $updates = [];
 
-        foreach (['titulo', 'descripcion', 'precio', 'consola', 'imagen'] as $campo) {
+        foreach (['titulo', 'descripcion', 'precio', 'consola', 'imagen', 'consola_color', 'id_consola'] as $campo) {
             if (isset($data[$campo])) {
-                $valor = $conn->real_escape_string($data[$campo]);
-                $updates[] = "$campo='$valor'";
+                $valor = $campo === 'id_consola' ? intval($data[$campo]) : $conn->real_escape_string($data[$campo]);
+                $valor_sql = $campo === 'id_consola' ? $valor : "'$valor'";
+                $updates[] = "$campo=$valor_sql";
             }
         }
 
