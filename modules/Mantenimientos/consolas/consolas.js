@@ -147,7 +147,7 @@
             }
         });
 
-    // delegate edit/delete
+    // edit/delete
     if (tbody)
         tbody.addEventListener("click", async (e) => {
             const edit = e.target.closest && e.target.closest(".admin-consola__edit");

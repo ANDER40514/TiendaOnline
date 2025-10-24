@@ -198,7 +198,7 @@ document.addEventListener("DOMContentLoaded", () => {
         previewImg.src = url ? `../../../${url}` : "../../../assets/img/no-photo.jpg";
     });
 
-    // Fila filtros BEM
+    // Fila filtros
     function crearFilaFiltros() {
         if (tableHead.querySelector(".table__filters")) return;
 

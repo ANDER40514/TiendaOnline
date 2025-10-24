@@ -74,7 +74,6 @@
 		})
 		.join("");
 
-	// Append login/logout link based on session
 	try {
 		const li = document.createElement('li');
 		li.className = 'navbar__items';

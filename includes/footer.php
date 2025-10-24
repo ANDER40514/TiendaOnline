@@ -7,7 +7,6 @@
 <?php
 if (!empty($extraJS)) {
     foreach ($extraJS as $jsFile) {
-        // allow absolute URLs (CDN) or relative project paths
         if (preg_match('/^(?:https?:)?\/\//i', $jsFile)) {
             echo '<script src="' . $jsFile . '"></script>' . PHP_EOL;
         } else {

@@ -2,7 +2,6 @@
 // Determina el protocolo (http o https)
 $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
 
-// Host del servidor
 $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
 
 $rootFolder = '/TiendaOnline/';

@@ -58,7 +58,6 @@ async function checkStock(id, needed) {
     try {
         const res = await fetch(`${API_INVENTARIO}?id=${encodeURIComponent(id)}`);
         if (!res.ok) {
-            // If inventory not found treat as no stock
             return false;
         }
         const data = await res.json();
@@ -151,8 +150,6 @@ function renderCart() {
         tbody.appendChild(tr);
     });
 
-    // remove buttons will be handled by delegated listener below to allow confirmation
-    // document.querySelectorAll('.compra__cart-remove').forEach(b => b.addEventListener('click', e => removeFromCart(e.target.dataset.id)));
     document.querySelectorAll('.compra__cart-qty').forEach(inp => inp.addEventListener('change', async e => await updateQuantity(e.target.dataset.id, e.target.value)));
 
     const totalEl = document.querySelector('.compra__cart-total'); if (totalEl) totalEl.innerText = fmt(total);
@@ -180,17 +177,14 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchJuegos();
     renderCart();
 
-    // Purchase button flow: require login (session) and then submit order using server-side session data
     const checkoutBtn = document.getElementById('realizar-compra');
     const orderDataEl = document.querySelector('.compra__order-data');
     if (!checkoutBtn || !orderDataEl) return;
 
-    // Show/hide button based on cart state inside renderCart
 
     checkoutBtn.addEventListener('click', async (e) => {
         e.preventDefault();
 
-        // Check if user is logged in (server will respond with user data)
         try {
             const me = await fetch('/TiendaOnline/api/auth.php');
             if (!me.ok) {
@@ -214,7 +208,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Build order from current cart (orderDataEl populated in renderCart)
         const raw = orderDataEl.value || '{}';
         let order;
         try { order = JSON.parse(raw); } catch (e) { order = null; }
@@ -224,7 +217,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Validate stock before sending
         for (const it of order.items) {
             const okStock = await checkStock(it.id, it.cantidad);
             if (!okStock) {
@@ -251,7 +243,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// Delegated listener for remove buttons (works even after re-render)
 document.addEventListener('click', function (e) {
     const btn = e.target.closest && e.target.closest('.compra__cart-remove');
     if (!btn) return;

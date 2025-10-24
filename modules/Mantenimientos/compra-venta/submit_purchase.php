@@ -49,7 +49,7 @@ if (!$useSession) {
 $conn->begin_transaction();
 $messages = [];
 try {
-    // Use session user's id_cliente for FK in venta and for stored procedure
+
     $sess = $_SESSION['user'];
     $id_cliente = isset($sess['id_cliente']) ? intval($sess['id_cliente']) : 0;
     $cliente_nombre = isset($sess['cliente']) ? $conn->real_escape_string($sess['cliente']) : '';
@@ -98,7 +98,6 @@ try {
             $msg = end($collected);
         }
 
-        // Store a sanitized message only (do not expose raw SQL or DB rows via API)
         $messages[] = ['id' => $id, 'message' => $msg, 'monto' => $monto];
 
         // Si el mensaje no indica compra exitosa, abortar
@@ -117,7 +116,7 @@ try {
     $backup = ['cliente' => $backupCliente, 'items' => $data['items'], 'total' => isset($data['total']) ? $data['total'] : array_sum(array_map(function ($i) {
         return $i['precio'] * $i['cantidad'];
     }, $data['items'])), 'fecha' => date('c'), 'db_messages' => $messages];
-    // append safe
+
     $fp = fopen($purchasesFile, 'c+');
     if ($fp) {
         if (flock($fp, LOCK_EX)) {

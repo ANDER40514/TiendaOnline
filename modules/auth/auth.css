@@ -1,4 +1,3 @@
-/* Variables para un control de estilo centralizado */
 :root {
     --primary-color: #007bff; /* Azul vibrante */
     --secondary-color: #28a745; /* Verde para acciones secundarias */
@@ -12,15 +11,14 @@
 }
 
 body {
-    background-color: var(--background-light); /* Aplicar el fondo claro al body */
+    background-color: var(--background-light);
 }
 
-/* Contenedor de página */
 .auth {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 100vh; /* Ocupar todo el alto de la vista */
+    min-height: 100vh;
     padding: 20px;
 }
 
@@ -36,13 +34,13 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 .auth__box:hover {
-    box-shadow: var(--shadow-hover); /* Pequeño efecto al pasar el mouse */
+    box-shadow: var(--shadow-hover);
 }
 
 /* Títulos */
 .auth__title {
     font-size: 26px;
-    font-weight: 600; /* Ligeramente más grueso */
+    font-weight: 600;
     margin-bottom: 25px;
     text-align: center;
     color: var(--text-dark);
@@ -52,7 +50,7 @@ body {
 .auth__box hr {
     border: 0;
     height: 1px;
-    background-color: var(--input-border); /* Separador suave y grisáceo */
+    background-color: var(--input-border);
     margin: 30px 0;
 }
 
@@ -60,7 +58,7 @@ body {
 .auth__form {
     display: flex;
     flex-direction: column;
-    gap: 15px; /* Más espacio entre campos */
+    gap: 15px;
 }
 
 /* Etiquetas e Inputs */
@@ -96,7 +94,7 @@ body {
     margin-top: 10px;
     padding: 14px 20px;
     background: var(--primary-color);
-    color: var(--card-background); /* Texto blanco puro */
+    color: var(--card-background);
     border: none;
     border-radius: 8px;
     cursor: pointer;
@@ -106,7 +104,7 @@ body {
 }
 
 .auth__btn:hover {
-    background: #0056b3; /* Color un poco más oscuro al pasar el mouse */
+    background: #0056b3;
     transform: translateY(-1px);
 }
 .auth__btn:active {
@@ -123,15 +121,13 @@ body {
 /* Estilos específicos para el área de registro */
 .auth__register-panel {
     margin-top: 20px;
-    /* Las transiciones más complejas se manejan mejor con JavaScript
-       pero el estilo inicial es limpio */
 }
 
 /* Responsive */
 @media (max-width: 480px) {
     .auth__box {
         padding: 20px;
-        border-radius: 0; /* Opcional: hacer que ocupe todo el ancho en móviles */
+        border-radius: 0;
     }
     .auth {
         padding: 0;

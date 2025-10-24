@@ -80,7 +80,6 @@ switch ($method) {
         $consola_color = isset($data['consola_color']) ? $conn->real_escape_string($data['consola_color']) : null;
         $id_consola = isset($data['id_consola']) ? intval($data['id_consola']) : 'NULL';
 
-        // Construir INSERT incluyendo campos opcionales
         $fields = ['titulo', 'descripcion', 'precio', 'consola', 'imagen'];
         $values = ["'$titulo'", "'$descripcion'", "'$precio'", "'$consola'", "'$imagen'"];
         if ($consola_color !== null) { $fields[] = 'consola_color'; $values[] = "'$consola_color'"; }
@@ -110,8 +109,6 @@ switch ($method) {
         $id_juego = intval($data['id']);
         $updates = [];
 
-        // Note: 'consola' is a display-only field in the frontend (disabled input).
-        // Avoid attempting to update a 'consola' column that may not exist in the DB.
         foreach (['titulo', 'descripcion', 'precio', 'imagen', 'consola_color', 'id_consola'] as $campo) {
             if (isset($data[$campo])) {
                 $valor = $campo === 'id_consola' ? intval($data[$campo]) : $conn->real_escape_string($data[$campo]);

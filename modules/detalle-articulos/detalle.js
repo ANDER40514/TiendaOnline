@@ -54,7 +54,7 @@
                     </label>
                     <div class="detalle__purchase-actions">
                         <button class="detalle__btn detalle__btn--add">Agregar al carrito</button>
-                        <button class="detalle__btn detalle__btn--goto" data-href="${BASE_URL}modules/compra-venta/compra-venta.php">Ir al carrito</button>
+                        <button class="detalle__btn detalle__btn--goto" data-href="${BASE_URL}modules/Mantenimientos/compra-venta/compra-venta.php">Ir al carrito</button>
                     </div>
                     <div class="detalle__purchase-msg" aria-live="polite"></div>
                 </div>

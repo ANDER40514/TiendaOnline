@@ -56,7 +56,6 @@ include __DIR__ . '/../../../includes/header.php';
             </tfoot>
         </table>
 
-        <!-- Simplified: only a button to trigger purchase. Order data stored in hidden input. -->
         <input type="hidden" class="compra__order-data" />
         <button id="realizar-compra" class="compra__btn compra__btn--submit hidden">Realizar compra</button>
 

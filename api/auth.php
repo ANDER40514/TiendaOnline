@@ -10,8 +10,12 @@ require_once 'db.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
 
-// Helper
-function json($v, $code = 200) { http_response_code($code); echo json_encode($v, JSON_UNESCAPED_UNICODE); exit; }
+function json($v, $code = 200)
+{
+    http_response_code($code);
+    echo json_encode($v, JSON_UNESCAPED_UNICODE);
+    exit;
+}
 
 if ($method === 'OPTIONS') json(['ok' => true]);
 
@@ -48,7 +52,6 @@ if ($method === 'POST') {
         if (!$row) json(['error' => 'Usuario no encontrado'], 401);
         if (!password_verify($password, $row['password'])) json(['error' => 'Contraseña inválida'], 401);
 
-        // remove password before storing
         unset($row['password']);
         $_SESSION['user'] = $row;
         json(['ok' => true, 'user' => $row]);
@@ -63,7 +66,6 @@ if ($method === 'POST') {
         $requestedRole = isset($input['id_RolUsuario']) ? intval($input['id_RolUsuario']) : null;
         if (!$usuario || !$password) json(['error' => 'Usuario y contraseña requeridos'], 400);
 
-        // check unique
         $stmt = $conn->prepare('SELECT id_cliente FROM cliente WHERE cliente = ?');
         $stmt->bind_param('s', $usuario);
         $stmt->execute();
@@ -100,5 +102,3 @@ if ($method === 'POST') {
 }
 
 json(['error' => 'Método no permitido'], 405);
-
-?>
