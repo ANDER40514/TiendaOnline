@@ -154,5 +154,55 @@
                 "sql": "CALL sp_compra(6, 1, 1000.00, 'Pedro Perez', 'pedro2@test.com', '', '')"
             }
         ]
+    },
+    {
+        "cliente": {
+            "nombre": "Anderson2",
+            "email": "anderson@prueba",
+            "direccion": "c interfaz",
+            "telefono": "80000"
+        },
+        "items": [
+            {
+                "id": "1",
+                "titulo": "Mario Bros",
+                "precio": 1900,
+                "cantidad": 1
+            }
+        ],
+        "total": 1900,
+        "fecha": "2025-10-24T17:59:50+02:00",
+        "db_messages": [
+            {
+                "id": 1,
+                "message": "Compra realizada correctamente",
+                "monto": 1900
+            }
+        ]
+    },
+    {
+        "cliente": {
+            "nombre": "Anderson2",
+            "email": "anderson@prueba",
+            "direccion": "c interfaz",
+            "telefono": "80000"
+        },
+        "items": [
+            {
+                "id": "6",
+                "titulo": "God of War 3",
+                "precio": 1320,
+                "cantidad": 4
+            }
+        ],
+        "total": 5280,
+        "fecha": "2025-10-24T18:00:24+02:00",
+        "db_messages": [
+            {
+                "id": 6,
+                "message": "Compra realizada correctamente",
+                "monto": 5280
+            }
+        ]
     }
 ]

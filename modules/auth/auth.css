@@ -1,0 +1,143 @@
+/* Variables para un control de estilo centralizado */
+:root {
+    --primary-color: #007bff; /* Azul vibrante */
+    --secondary-color: #28a745; /* Verde para acciones secundarias */
+    --background-light: #f4f6f9; /* Fondo muy claro */
+    --card-background: #ffffff; /* Fondo blanco puro para la caja */
+    --text-dark: #333333; /* Texto oscuro principal */
+    --input-border: #e0e6ed; /* Borde suave */
+    --border-radius: 12px; /* Radio de borde suave y moderno */
+    --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.08); /* Sombra sutil y elevada */
+    --shadow-hover: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+body {
+    background-color: var(--background-light); /* Aplicar el fondo claro al body */
+}
+
+/* Contenedor de página */
+.auth {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh; /* Ocupar todo el alto de la vista */
+    padding: 20px;
+}
+
+/* Caja principal de autenticación (La "tarjeta") */
+.auth__box {
+    width: 420px;
+    max-width: 100%; /* Asegurar responsividad */
+    background: var(--card-background);
+    padding: 30px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-light);
+    transition: box-shadow 0.3s ease;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.auth__box:hover {
+    box-shadow: var(--shadow-hover); /* Pequeño efecto al pasar el mouse */
+}
+
+/* Títulos */
+.auth__title {
+    font-size: 26px;
+    font-weight: 600; /* Ligeramente más grueso */
+    margin-bottom: 25px;
+    text-align: center;
+    color: var(--text-dark);
+}
+
+/* Separador */
+.auth__box hr {
+    border: 0;
+    height: 1px;
+    background-color: var(--input-border); /* Separador suave y grisáceo */
+    margin: 30px 0;
+}
+
+/* Formularios */
+.auth__form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Más espacio entre campos */
+}
+
+/* Etiquetas e Inputs */
+.auth__form label {
+    display: flex;
+    flex-direction: column;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-dark);
+    gap: 6px;
+}
+
+.auth__form input,
+.auth__role-select {
+    padding: 12px 15px; /* Inputs más grandes para mejor tacto */
+    border: 1px solid var(--input-border);
+    border-radius: 8px; /* Bordes suaves en los inputs */
+    font-size: 16px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.auth__form input:focus,
+.auth__role-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2); /* Efecto de 'anillo de enfoque' moderno */
+    outline: none;
+}
+
+/* Botones */
+.auth__btn {
+    margin-top: 10px;
+    padding: 14px 20px;
+    background: var(--primary-color);
+    color: var(--card-background); /* Texto blanco puro */
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+.auth__btn:hover {
+    background: #0056b3; /* Color un poco más oscuro al pasar el mouse */
+    transform: translateY(-1px);
+}
+.auth__btn:active {
+    transform: translateY(0);
+}
+
+.auth__btn--secondary {
+    background: var(--secondary-color);
+}
+.auth__btn--secondary:hover {
+    background: #218838;
+}
+
+/* Estilos específicos para el área de registro */
+.auth__register-panel {
+    margin-top: 20px;
+    /* Las transiciones más complejas se manejan mejor con JavaScript
+       pero el estilo inicial es limpio */
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .auth__box {
+        padding: 20px;
+        border-radius: 0; /* Opcional: hacer que ocupe todo el ancho en móviles */
+    }
+    .auth {
+        padding: 0;
+    }
+}
+
+.hidden {
+    display:none;
+}
