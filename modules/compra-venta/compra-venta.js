@@ -120,20 +120,20 @@ function renderCart() {
     const tbody = document.querySelector('.compra__cart-table tbody');
     const table = document.querySelector('.compra__cart-table');
     const empty = document.querySelector('.compra__cart-empty');
-    const checkoutForm = document.querySelector('.compra__checkout-form');
+    const checkoutBtn = document.getElementById('realizar-compra');
 
     const items = Object.values(cart);
     if (items.length === 0) {
         if (table) table.classList.add('hidden');
         if (empty) empty.classList.remove('hidden');
-        if (checkoutForm) checkoutForm.classList.add('hidden');
+        if (checkoutBtn) checkoutBtn.classList.add('hidden');
         const resEl = document.querySelector('.compra__result'); if (resEl) resEl.innerText = '';
         return;
     }
 
     if (empty) empty.classList.add('hidden');
     if (table) table.classList.remove('hidden');
-    if (checkoutForm) checkoutForm.classList.remove('hidden');
+    if (checkoutBtn) checkoutBtn.classList.remove('hidden');
 
     tbody.innerHTML = '';
     let total = 0;
@@ -180,69 +180,73 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchJuegos();
     renderCart();
 
-    const checkoutForm = document.querySelector('.compra__checkout-form');
-    if (!checkoutForm) return;
+    // Purchase button flow: require login (session) and then submit order using server-side session data
+    const checkoutBtn = document.getElementById('realizar-compra');
+    const orderDataEl = document.querySelector('.compra__order-data');
+    if (!checkoutBtn || !orderDataEl) return;
 
-    checkoutForm.addEventListener('submit', async (e) => {
+    // Show/hide button based on cart state inside renderCart
+
+    checkoutBtn.addEventListener('click', async (e) => {
         e.preventDefault();
-        const nombre = (document.querySelector('.compra__field-nombre') || {}).value?.trim() || '';
-        const email = (document.querySelector('.compra__field-email') || {}).value?.trim() || '';
-        const direccion = (document.querySelector('.compra__field-direccion') || {}).value?.trim() || '';
-        const telefonoEl = document.querySelector('input[name="cliente_telefono"]') || document.querySelector('.compra__field-telefono');
-        const telefono = (telefonoEl || {}).value?.trim() || '';
-        const order = { cliente: { nombre, email, direccion, telefono }, ...JSON.parse(document.querySelector('.compra__order-data').value || '{}') };
 
-        // Validaciones simples
-        if (!nombre || !email) {
-            if (typeof Swal !== 'undefined') {
-                Swal.fire({ icon: 'error', title: 'Datos incompletos', text: 'Por favor completa nombre y email del cliente.' });
-            } else {
-                alert('Por favor completa nombre y email del cliente.');
+        // Check if user is logged in (server will respond with user data)
+        try {
+            const me = await fetch('/TiendaOnline/api/auth.php');
+            if (!me.ok) {
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({ icon: 'warning', title: 'No autenticado', text: 'Debes iniciar sesión para realizar una compra.' });
+                } else alert('Debes iniciar sesión para realizar una compra.');
+                return;
             }
+            const meJson = await me.json();
+            if (!meJson || !meJson.ok || !meJson.user) {
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({ icon: 'warning', title: 'No autenticado', text: 'Debes iniciar sesión para realizar una compra.' });
+                } else alert('Debes iniciar sesión para realizar una compra.');
+                return;
+            }
+        } catch (err) {
+            console.warn('Error checking session', err);
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({ icon: 'warning', title: 'No autenticado', text: 'Debes iniciar sesión para realizar una compra.' });
+            } else alert('Debes iniciar sesión para realizar una compra.');
             return;
         }
 
-        try {
-            // Before submitting, validate stock for all items
-            const itemsToCheck = Object.values(cart);
-            for (const it of itemsToCheck) {
-                const okStock = await checkStock(it.id, it.cantidad);
-                if (!okStock) {
-                    if (typeof Swal !== 'undefined') {
-                        Swal.fire({ icon: 'error', title: 'Stock insuficiente', text: `No hay suficiente stock para ${it.titulo}. Ajusta la cantidad.` });
-                    } else {
-                        alert('Stock insuficiente para ' + it.titulo);
-                    }
-                    return;
-                }
+        // Build order from current cart (orderDataEl populated in renderCart)
+        const raw = orderDataEl.value || '{}';
+        let order;
+        try { order = JSON.parse(raw); } catch (e) { order = null; }
+        if (!order || !Array.isArray(order.items) || order.items.length === 0) {
+            if (typeof Swal !== 'undefined') Swal.fire({ icon: 'info', title: 'Carrito vacío', text: 'Agrega productos al carrito antes de comprar.' });
+            else alert('Carrito vacío');
+            return;
+        }
+
+        // Validate stock before sending
+        for (const it of order.items) {
+            const okStock = await checkStock(it.id, it.cantidad);
+            if (!okStock) {
+                if (typeof Swal !== 'undefined') Swal.fire({ icon: 'error', title: 'Stock insuficiente', text: `No hay suficiente stock para ${it.titulo}. Ajusta la cantidad.` });
+                else alert('Stock insuficiente para ' + it.titulo);
+                return;
             }
-            const res = await fetch(SUBMIT_ORDER, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(order)
-            });
+        }
+
+        try {
+            const res = await fetch(SUBMIT_ORDER, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(order) });
             const json = await res.json();
-            const resEl = document.querySelector('.compra__result');
             if (res.ok) {
-                if (typeof Swal !== 'undefined') {
-                    Swal.fire({ icon: 'success', title: 'Compra realizada', text: json.id ? 'ID: ' + json.id : 'Gracias por su compra' });
-                } else {
-                    if (resEl) resEl.innerText = 'Orden creada';
-                }
-                cart = {};
-                saveCart();
-                renderCart();
+                if (typeof Swal !== 'undefined') Swal.fire({ icon: 'success', title: 'Compra realizada', text: json.messages ? 'Compra procesada' : 'Gracias' });
+                cart = {}; saveCart(); renderCart();
             } else {
-                const errMsg = (json.error || json.message || 'No se pudo crear la orden');
-                if (typeof Swal !== 'undefined') {
-                    Swal.fire({ icon: 'error', title: 'Error', text: errMsg });
-                } else {
-                    if (resEl) resEl.innerText = 'Error: ' + errMsg;
-                }
+                const err = json.error || 'No se pudo crear la orden';
+                if (typeof Swal !== 'undefined') Swal.fire({ icon: 'error', title: 'Error', text: err });
             }
         } catch (err) {
-            console.error(err);
-            const resEl = document.querySelector('.compra__result'); if (resEl) resEl.innerText = 'Error de red al enviar la orden.';
+            console.error('Error enviando orden', err);
+            if (typeof Swal !== 'undefined') Swal.fire({ icon: 'error', title: 'Error', text: 'Error de red al enviar la orden.' });
         }
     });
 });

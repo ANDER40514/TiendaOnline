@@ -3,6 +3,13 @@ require_once __DIR__ . '/config.php';
 
 // BASE_URL siempre termine con "/"
 $baseUrl = rtrim(BASE_URL, '/') . '/';
+
+// start session to expose current user to frontend (non-persistent cookie)
+if (session_status() === PHP_SESSION_NONE) {
+    // session cookie only for browser session (expires on close)
+    session_set_cookie_params(0);
+    session_start();
+}
 ?>
 
 <!doctype html>
@@ -28,6 +35,10 @@ $baseUrl = rtrim(BASE_URL, '/') . '/';
         // 🔧 Forzamos la barra final y mostramos en consola para depurar
         const BASE_URL = '<?= rtrim(BASE_URL, "/") ?>/';
         console.log("BASE_URL ->", BASE_URL);
+
+        // Usuario actual (desde sesión PHP)
+        const CURRENT_USER = <?= json_encode($_SESSION['user'] ?? null, JSON_UNESCAPED_UNICODE) ?>;
+        console.log('CURRENT_USER ->', CURRENT_USER);
 
         // Definimos rutas completas
         const PAGE_JSON = {

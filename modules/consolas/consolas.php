@@ -1,5 +1,5 @@
 <?php
-$pageTitle = 'Admin - Consolas';
+$pageTitle = 'Consolas | Tienda Online';
 $extraCSS = ['modules/consolas/consolas.css'];
 $extraJS = [
     'https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js',

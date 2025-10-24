@@ -1,6 +1,10 @@
 <?php
 header('Content-Type: application/json; charset=UTF-8');
 
+// Use non-persistent session cookie (align with auth behavior) and start session
+session_set_cookie_params(0);
+session_start();
+
 // Solo aceptar POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -16,24 +20,43 @@ if (!$data) {
     exit;
 }
 
-// Validaciones básicas
-if (empty($data['cliente']['nombre']) || empty($data['cliente']['email']) || empty($data['items']) || !is_array($data['items'])) {
+// Conectar a BD
+require_once __DIR__ . '/../../api/db.php';
+
+// Validaciones básicas: siempre se requieren items; cliente puede venir desde sesión o desde payload
+if (empty($data['items']) || !is_array($data['items'])) {
     http_response_code(400);
-    echo json_encode(['error' => 'Faltan datos requeridos en la orden']);
+    echo json_encode(['error' => 'Faltan items en la orden']);
     exit;
 }
 
-// Conectar a BD
-require_once __DIR__ . '/../../api/db.php';
+// Require logged-in user. The purchase workflow uses server-side session customer data.
+if (empty($_SESSION['user'])) {
+    http_response_code(401);
+    echo json_encode(['error' => 'No autenticado. Debe iniciar sesión para realizar compras.']);
+    exit;
+}
+
+// If user is logged in, prefer server-side session data for cliente
+$useSession = !empty($_SESSION['user']);
+if (!$useSession) {
+    if (empty($data['cliente']['nombre']) || empty($data['cliente']['email'])) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Faltan datos del cliente (nombre/email)']);
+        exit;
+    }
+}
 
 $conn->begin_transaction();
 $messages = [];
 try {
-    // Prepara datos del cliente (escapados)
-    $cliente_nombre = isset($data['cliente']['nombre']) ? $conn->real_escape_string($data['cliente']['nombre']) : '';
-    $cliente_email = isset($data['cliente']['email']) ? $conn->real_escape_string($data['cliente']['email']) : '';
-    $cliente_direccion = isset($data['cliente']['direccion']) ? $conn->real_escape_string($data['cliente']['direccion']) : '';
-    $cliente_telefono = isset($data['cliente']['telefono']) ? $conn->real_escape_string($data['cliente']['telefono']) : '';
+    // Use session user's id_cliente for FK in venta and for stored procedure
+    $sess = $_SESSION['user'];
+    $id_cliente = isset($sess['id_cliente']) ? intval($sess['id_cliente']) : 0;
+    $cliente_nombre = isset($sess['cliente']) ? $conn->real_escape_string($sess['cliente']) : '';
+    $cliente_email = isset($sess['email']) ? $conn->real_escape_string($sess['email']) : '';
+    $cliente_direccion = isset($sess['direccion']) ? $conn->real_escape_string($sess['direccion']) : '';
+    $cliente_telefono = isset($sess['telefono']) ? $conn->real_escape_string($sess['telefono']) : '';
 
     foreach ($data['items'] as $it) {
         $id = intval($it['id']);
@@ -43,8 +66,9 @@ try {
         // Formatear monto con punto decimal para MySQL
         $monto_sql = number_format($monto, 2, '.', '');
 
-        // Ejecutar el procedure con parámetros de cliente usando multi_query
-        $sql = "CALL sp_compra($id, $cantidad, $monto_sql, '$cliente_nombre', '$cliente_email', '$cliente_direccion', '$cliente_telefono')";
+    // Ejecutar el procedure con parámetros esperados: id_juego, cantidad, monto, id_cliente
+    // Pasamos el id numérico del cliente (FK) desde la sesión para evitar problemas de integridad referencial
+    $sql = "CALL sp_compra($id, $cantidad, $monto_sql, $id_cliente)";
 
         $msg = '';
         if (!$conn->multi_query($sql)) {
@@ -75,21 +99,23 @@ try {
             $msg = end($collected);
         }
 
-        $messages[] = ['id' => $id, 'message' => $msg, 'monto' => $monto, 'collected' => $collected, 'sql' => $sql];
+        // Store a sanitized message only (do not expose raw SQL or DB rows via API)
+        $messages[] = ['id' => $id, 'message' => $msg, 'monto' => $monto];
 
         // Si el mensaje no indica compra exitosa, abortar
         if (strpos($msg, 'Compra realizada correctamente') === false) {
-            throw new Exception('Error en item ' . $id . ': ' . $msg . ' -- collected: ' . json_encode($collected) . ' -- sql: ' . $sql);
+            throw new Exception('Error en item ' . $id . ': ' . $msg);
         }
     }
 
     // Si todo bien, commit
     $conn->commit();
 
-    // Guardar copia de la orden en archivo (backup)
+    // Guardar copia de la orden en archivo (backup) usando los datos finales del cliente
     $purchasesFile = __DIR__ . '/../../data/purchases.json';
     if (!is_dir(dirname($purchasesFile))) mkdir(dirname($purchasesFile), 0755, true);
-    $backup = ['cliente' => $data['cliente'], 'items' => $data['items'], 'total' => isset($data['total']) ? $data['total'] : array_sum(array_map(function ($i) {
+    $backupCliente = ['nombre' => $cliente_nombre, 'email' => $cliente_email, 'direccion' => $cliente_direccion, 'telefono' => $cliente_telefono];
+    $backup = ['cliente' => $backupCliente, 'items' => $data['items'], 'total' => isset($data['total']) ? $data['total'] : array_sum(array_map(function ($i) {
         return $i['precio'] * $i['cantidad'];
     }, $data['items'])), 'fecha' => date('c'), 'db_messages' => $messages];
     // append safe

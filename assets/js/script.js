@@ -48,11 +48,16 @@
 	// =========================
 	function mostrarNavbar(data) {
 		if (!navList) return;
-		navList.innerHTML = data
-			.map((item) => {
-				const itemHref = resolveHref(item.href);
-				const submenu = item["sub-module"]?.length
-					? `<ul class="navbar__submenu">
+	if (!navList) return;
+
+	// show all items (no role-based hiding)
+	const items = (data || []).filter(item => item && item.text);
+
+	navList.innerHTML = items
+		.map((item) => {
+			const itemHref = resolveHref(item.href);
+			const submenu = item["sub-module"]?.length
+				? `<ul class="navbar__submenu">
 						${item["sub-module"]
 						.map(
 							(sub) =>
@@ -61,13 +66,30 @@
 						)
 						.join("")}
 					</ul>`
-					: "";
-				return `<li class="${item.class || ""}">
+				: "";
+			return `<li class="${item.class || ""}">
 						<a href="${itemHref}" class="navbar__links">${item.text}</a>
 						${submenu}
 					</li>`;
-			})
-			.join("");
+		})
+		.join("");
+
+	// Append login/logout link based on session
+	try {
+		const li = document.createElement('li');
+		li.className = 'navbar__items';
+		const a = document.createElement('a');
+		a.className = 'navbar__links';
+		if (typeof CURRENT_USER !== 'undefined' && CURRENT_USER) {
+			a.href = BASE_URL + 'modules/auth/logout.php';
+			a.innerText = 'Cerrar sesión';
+		} else {
+			a.href = BASE_URL + 'modules/auth/login.php';
+			a.innerText = 'Iniciar sesión';
+		}
+		li.appendChild(a);
+		navList.appendChild(li);
+	} catch (e) { console.warn('Error appending auth link', e); }
 	}
 
 	// =========================

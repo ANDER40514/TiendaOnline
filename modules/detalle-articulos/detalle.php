@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../../includes/config.php';
 
-$pageTitle = 'Detalle del Producto';
+$pageTitle = 'Detalle del Producto | Tienda Online';
 $pageJSON = [
     'navbar' => 'data/navbar.json',
     'gallery' => null,
