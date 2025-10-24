@@ -16,8 +16,6 @@ switch ($method) {
     case 'GET':
     if (isset($_GET['id'])) {
         $id = intval($_GET['id']);
-        // Usar la vista v_juego que ya hace el join entre juego y consola.
-        // Aliasamos los campos para mantener compatibilidad con el frontend (consola, consola_color, id_consola)
         $sql = "SELECT v.id_juego, v.titulo, v.descripcion, v.precio, v.nombre AS consola, v.imagen, v.consola_color, v.id_consola, v.code as consola_code
             FROM v_juego v
             WHERE v.id_juego = $id";
@@ -112,7 +110,9 @@ switch ($method) {
         $id_juego = intval($data['id']);
         $updates = [];
 
-        foreach (['titulo', 'descripcion', 'precio', 'consola', 'imagen', 'consola_color', 'id_consola'] as $campo) {
+        // Note: 'consola' is a display-only field in the frontend (disabled input).
+        // Avoid attempting to update a 'consola' column that may not exist in the DB.
+        foreach (['titulo', 'descripcion', 'precio', 'imagen', 'consola_color', 'id_consola'] as $campo) {
             if (isset($data[$campo])) {
                 $valor = $campo === 'id_consola' ? intval($data[$campo]) : $conn->real_escape_string($data[$campo]);
                 $valor_sql = $campo === 'id_consola' ? $valor : "'$valor'";

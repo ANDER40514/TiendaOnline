@@ -6,12 +6,12 @@
     },
     {
         "text": "Catalogo",
-        "href": "#body",
+        "href": "#",
         "class": "navbar__items",
         "sub-module": [
             {
                 "text": "Articulos",
-                "href": "#inicio",
+                "href": "#body",
                 "class": "navbar__sub-items"
             },
             {
@@ -28,22 +28,22 @@
     },
     {
         "text": "Informaciones",
-        "href": "#footer",
+        "href": "#",
         "class": "navbar__items",
         "sub-module": [
             {
                 "text": "Mision",
-                "href": "#inicio",
+                "href": "modules/informaciones/mision.php",
                 "class": "navbar__sub-items"
             },
             {
                 "text": "Vision",
-                "href": "#inicio",
+                "href": "modules/informaciones/vision.php",
                 "class": "navbar__sub-items"
             },
             {
-                "text": "Sobre Nosotros",
-                "href": "#inicio",
+                "text": "Formulario de Contacto",
+                "href": "modules/informaciones/contacto/contacto.php",
                 "class": "navbar__sub-items"
             }
         ]
@@ -55,22 +55,17 @@
         "sub-module": [
             {
                 "text": "Edicion de Juegos",
-                "href": "modules/admin-juegos/admin-juegos.php",
+                "href": "modules/mantenimientos/edicion-juegos/edicion-juegos.php",
                 "class": "navbar__sub-items"
             },
             {
-                "text": "Compra y Venta de Juegos",
-                "href": "modules/compra-venta/compra-venta.php",
-                "class": "navbar__sub-items"
-            },
-            {
-                "text": "Formulario de Contacto",
-                "href": "modules/contacto/contacto.php",
+                "text": "Venta de Juegos",
+                "href": "modules/mantenimientos/compra-venta/compra-venta.php",
                 "class": "navbar__sub-items"
             },
             {
                 "text": "Administracion de Consolas",
-                "href": "modules/consolas/consolas.php",
+                "href": "modules/mantenimientos/consolas/consolas.php",
                 "class": "navbar__sub-items"
             }
         ]

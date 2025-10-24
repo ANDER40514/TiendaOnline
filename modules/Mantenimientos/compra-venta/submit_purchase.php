@@ -1,7 +1,6 @@
 <?php
 header('Content-Type: application/json; charset=UTF-8');
 
-// Use non-persistent session cookie (align with auth behavior) and start session
 session_set_cookie_params(0);
 session_start();
 
@@ -21,7 +20,7 @@ if (!$data) {
 }
 
 // Conectar a BD
-require_once __DIR__ . '/../../api/db.php';
+require_once __DIR__ . '/../../../api/db.php';
 
 // Validaciones básicas: siempre se requieren items; cliente puede venir desde sesión o desde payload
 if (empty($data['items']) || !is_array($data['items'])) {

@@ -1,6 +1,6 @@
 const API_JUEGOS = "/TiendaOnline/api/juegos.php";
 const API_INVENTARIO = "/TiendaOnline/api/inventario.php";
-const SUBMIT_ORDER = "/TiendaOnline/modules/compra-venta/submit_purchase.php";
+const SUBMIT_ORDER = "/TiendaOnline/modules/mantenimientos/compra-venta/submit_purchase.php";
 
 let juegos = [];
 let cart = {}; // id_juego => {id, titulo, precio, cantidad}
