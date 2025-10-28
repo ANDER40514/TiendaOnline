@@ -1,12 +1,12 @@
 :root {
-    --primary-color: #007bff; /* Azul vibrante */
-    --secondary-color: #28a745; /* Verde para acciones secundarias */
-    --background-light: #f4f6f9; /* Fondo muy claro */
-    --card-background: #ffffff; /* Fondo blanco puro para la caja */
-    --text-dark: #333333; /* Texto oscuro principal */
-    --input-border: #e0e6ed; /* Borde suave */
-    --border-radius: 12px; /* Radio de borde suave y moderno */
-    --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.08); /* Sombra sutil y elevada */
+    --primary-color: #007bff;
+    --secondary-color: #28a745;
+    --background-light: #f4f6f9;
+    --card-background: #ffffff; 
+    --text-dark: #333333;
+    --input-border: #e0e6ed;
+    --border-radius: 12px; 
+    --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.08);
     --shadow-hover: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
@@ -22,7 +22,7 @@ body {
     padding: 20px;
 }
 
-/* Caja principal de autenticación (La "tarjeta") */
+/* Caja principal de autenticación */
 .auth__box {
     width: 420px;
     max-width: 100%; /* Asegurar responsividad */
@@ -73,9 +73,9 @@ body {
 
 .auth__form input,
 .auth__role-select {
-    padding: 12px 15px; /* Inputs más grandes para mejor tacto */
+    padding: 12px 15px;
     border: 1px solid var(--input-border);
-    border-radius: 8px; /* Bordes suaves en los inputs */
+    border-radius: 8px;
     font-size: 16px;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
     width: 100%;
@@ -85,7 +85,7 @@ body {
 .auth__form input:focus,
 .auth__role-select:focus {
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2); /* Efecto de 'anillo de enfoque' moderno */
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
     outline: none;
 }
 

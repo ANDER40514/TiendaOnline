@@ -87,10 +87,10 @@ body {
 
 /* Submenu */
 .navbar__submenu {
-    display: block; /* keep in flow but hidden via visibility/opactiy to preserve hover area */
+    display: block;
     position: absolute;
     left: 0;
-    top: 100%; /* place directly below the parent to avoid gap while moving mouse */
+    top: 100%;
     background: #222;
     padding: 8px 0;
     margin: 0;

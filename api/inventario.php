@@ -47,3 +47,4 @@ while ($r = $result->fetch_assoc()) $rows[] = $r;
 echo json_encode($rows, JSON_UNESCAPED_UNICODE);
 $conn->close();
 exit;
+?>

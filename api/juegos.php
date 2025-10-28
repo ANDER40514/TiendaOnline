@@ -142,7 +142,7 @@ switch ($method) {
         }
 
         $id = intval($_GET['id']);
-        $sql = "DELETE FROM juego WHERE id_juego = $id";
+        $sql = "CALL sp_borrar($id)";
 
         if ($conn->query($sql)) {
             if ($conn->affected_rows > 0) {
@@ -162,3 +162,4 @@ switch ($method) {
         $conn->close();
         exit;
 }
+?>

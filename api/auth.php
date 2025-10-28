@@ -102,3 +102,4 @@ if ($method === 'POST') {
 }
 
 json(['error' => 'Método no permitido'], 405);
+?>

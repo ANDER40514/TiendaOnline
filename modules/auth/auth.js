@@ -45,7 +45,7 @@
             const res = await postAction({ action: 'login', usuario: data.usuario, password: data.password });
             const j = await res.json();
             if (res.ok) {
-                if (window.Swal) Swal.fire({ icon: 'success', title: 'Bienvenido', text: j.user.cliente || '' }).then(() => window.location.href = BASE_URL + 'index.php' );
+                if (window.Swal) Swal.fire({ icon: 'success', title: 'Bienvenido', text: `Usuario: ${j.user.cliente}` || '' }).then(() => window.location.href = BASE_URL + 'index.php' );
                 else window.location.href = BASE_URL + 'index.php';
             } else {
                 if (window.Swal) Swal.fire({ icon: 'error', title: 'Error', text: j.error || 'Credenciales inválidas' });
