@@ -1,7 +1,7 @@
 <?php
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: /TiendaOnline/contacto/contacto.php');
+    header('Location: /TiendaOnline/modules/informaciones/contacto/contacto.php');
     exit;
 }
 
@@ -17,11 +17,11 @@ if ($message === '') $errors[] = 'Mensaje requerido';
 
 if ($errors) {
     $q = http_build_query(['errors' => $errors]);
-    header('Location: /TiendaOnline/contact/contact.php?' . $q);
+    header('Location: /TiendaOnline/modules/informaciones/contacto/contacto.php' . $q);
     exit;
 }
 
 $logLine = sprintf("[%s] %s <%s> : %s\n", date('c'), $name, $email, $message);
 file_put_contents(__DIR__ . '/messages.log', $logLine, FILE_APPEND | LOCK_EX);
-header('Location: /TiendaOnline/contact/contact.php?sent=1');
+header('Location: /TiendaOnline/modules/informaciones/contacto/contacto.php?sent=1');
 exit;

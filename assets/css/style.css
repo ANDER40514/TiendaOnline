@@ -133,6 +133,11 @@ body {
     color: #fff;
 }
 
+.navbar__links--user,
+.navbar__links--logout {
+    font-weight: bolder;
+}
+
 /* Seccion de Inicio */
 .inicio {
     text-align: center;
@@ -309,6 +314,12 @@ body {
     transform: translateY(-2px);
 }
 
+.gallery__empty {
+    color: black;
+    font-size: 24px;
+    font-weight: bolder;
+}
+
 /* Footer */
 #footer {
     color: var(--color);
@@ -352,7 +363,6 @@ body {
 .footer__links {
     display: flex;
     flex-direction: column;
-    gap: 6px;
     margin-left: 0;
     font-size: 14px;
     padding: 12px;

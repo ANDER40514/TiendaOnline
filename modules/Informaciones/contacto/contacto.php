@@ -1,7 +1,9 @@
 <?php
 $pageTitle = 'Contacto | Tienda Online';
 $extraCSS = ['modules/informaciones/contacto/contacto.css'];
-$extraJS = ['modules/informaciones/contacto/contacto.js'];
+$extraJS = ['modules/informaciones/contacto/contacto.js',   
+            'https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js'
+];
 
 $pageJSON = [
     'navbar' => 'data/navbar.json',
@@ -19,7 +21,7 @@ include __DIR__ . '/../../../includes/header.php';
         contactarnos a través del siguiente formulario:
     </p>
 
-    <form class="form" id="contact-form" action="<?= BASE_URL ?>contact/submit_contact.php" method="post">
+    <form id="form" class="form" id="contact-form" action="<?= BASE_URL ?>modules/Informaciones/contacto/submit_contact.php" method="post">
         <div class="form__data">
             <label class="form__label" for="name">Nombre</label>
             <input class="form__input" type="text" id="name" name="name" placeholder="Ingresa tu nombre" required />

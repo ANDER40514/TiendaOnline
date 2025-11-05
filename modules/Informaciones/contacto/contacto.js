@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-
     const nameInput = document.getElementById('name');
     const emailInput = document.getElementById('email');
 
@@ -39,3 +38,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 });
+
+const form = document.getElementById("form");
+
+form.addEventListener('submit', function (x) {
+    x.preventDefault();
+    Swal.fire({ icon: 'success', title: 'Enviado', text: 'Mensaje enviado Satisfactoriamente.'});
+})
