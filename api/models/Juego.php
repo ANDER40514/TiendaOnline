@@ -14,7 +14,7 @@ class JuegoModel {
 
     public static function obtenerTodos() {
         $conn = self::getConnection();
-        $sql = "SELECT id_juego, titulo, descripcion, precio, imagen FROM juego";
+        $sql = "SELECT id_juego, titulo, descripcion, precio, nombre as nombre_consola, imagen, consola_color FROM v_juego";
         $res = $conn->query($sql);
 
         if (!$res) {
@@ -31,7 +31,7 @@ class JuegoModel {
 
     public static function obtenerPorId($id) {
         $conn = self::getConnection();
-        $stmt = $conn->prepare("SELECT id_juego, titulo, descripcion, precio, imagen FROM juego WHERE id_juego = ?");
+        $stmt = $conn->prepare("SELECT id_juego, titulo, descripcion, precio, nombre as nombre_consola, imagen, consola_color FROM v_juego WHERE id_juego = ?");
         $stmt->bind_param("i", $id);
         $stmt->execute();
         $res = $stmt->get_result();

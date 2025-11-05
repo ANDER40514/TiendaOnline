@@ -17,7 +17,7 @@ class ClienteModel
     public static function obtenerTodos()
     {
         $conn = self::getConnection();
-        $sql = "SELECT id_cliente, id_RolUsuario, cliente, email, direccion, telefono FROM cliente";
+        $sql = "SELECT id_cliente, id_RolUsuario, cliente, email, direccion, telefono, password FROM cliente";
         $res = $conn->query($sql);
 
         if (!$res) {

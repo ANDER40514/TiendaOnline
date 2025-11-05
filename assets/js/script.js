@@ -1,19 +1,16 @@
 (() => {
 	// =========================
-	// Detectar BASE_URL dinámicamente
+	// Configuración BASE
 	// =========================
-	const BASE_URL = (() => {
-		const { origin, pathname } = window.location;
-		const base = pathname.split("/").slice(0, -1).join("/");
-		return origin + base + "/";
-	})();
+	const BASE_URL = window.location.origin + "/TiendaOnline/"; // Root del proyecto
+	const API_URL = BASE_URL + "api/";                          // Endpoint API
 
 	// =========================
 	// Archivos base (JSON locales)
 	// =========================
 	const PAGE_JSON = {
-		navbar: BASE_URL + "/data/navbar.json",
-		footer: BASE_URL + "/data/footer.json",
+		navbar: BASE_URL + "data/navbar.json",
+		footer: BASE_URL + "data/footer.json",
 	};
 
 	// =========================
@@ -41,7 +38,15 @@
 		try {
 			const res = await fetch(endpoint);
 			if (!res.ok) throw new Error(`Error ${res.status} al consumir la API`);
-			return await res.json();
+			const json = await res.json();
+
+			// Verificamos si hay un array en json.data
+			if (json && Array.isArray(json.data)) return json.data;
+
+			// Si es un solo objeto con id_juego, lo convertimos a array
+			if (json && json.id_juego !== undefined) return [json];
+
+			return []; // cualquier otro caso
 		} catch (err) {
 			console.error("Error al consumir la API:", err);
 			return [];
@@ -60,29 +65,24 @@
 	// =========================
 	function mostrarNavbar(data) {
 		if (!navList) return;
-		const items = (data || []).filter((item) => item && item.text);
+		const items = (data || []).filter(item => item && item.text);
 
 		navList.innerHTML = items
-			.map((item) => {
+			.map(item => {
 				const itemHref = resolveHref(item.href);
 				const submenu = item["sub-module"]?.length
 					? `<ul class="navbar__submenu">
-						${item["sub-module"]
-							.map(
-								(sub) =>
-									`<li class="${sub.class || "navbar__sub-items"}">
-										<a href="${resolveHref(sub.href)}">${sub.text}</a>
-									</li>`
-							)
-							.join("")}
-					  </ul>`
+                        ${item["sub-module"]
+						.map(sub => `<li class="${sub.class || "navbar__sub-items"}">
+                                <a href="${resolveHref(sub.href)}">${sub.text}</a>
+                            </li>`).join("")}
+                    </ul>`
 					: "";
 				return `<li class="${item.class || ""}">
-							<a href="${itemHref}" class="navbar__links">${item.text}</a>
-							${submenu}
-						</li>`;
-			})
-			.join("");
+                            <a href="${itemHref}" class="navbar__links">${item.text}</a>
+                            ${submenu}
+                        </li>`;
+			}).join("");
 	}
 
 	// =========================
@@ -98,7 +98,7 @@
 		}
 
 		galleryContainer.innerHTML = items
-			.map((card) => {
+			.map(card => {
 				const img = card.imagen || card.image || "assets/img/no-photo.jpg";
 				const title = card.titulo || card.nombre || "Sin título";
 				const desc = card.descripcion || "";
@@ -107,17 +107,16 @@
 				const detalleUrl = BASE_URL + "modules/detalle-articulos/detalle.php?id_juego=" + encodeURIComponent(id);
 
 				return `
-					<div class="gallery__item">
-						<div class="gallery__card">
-							<img src="${BASE_URL + img}" alt="${title}" class="gallery__img">
-							<h2 class="gallery__title-card">${title}</h2>
-							<p class="gallery__description-card">${desc}</p>
-							<span class="gallery__price-card">DOP $${price.toFixed(2)}</span>
-							<a href="${detalleUrl}" class="gallery__btn-card">Ver más</a>
-						</div>
-					</div>`;
-			})
-			.join("");
+                    <div class="gallery__item">
+                        <div class="gallery__card">
+                            <img src="${BASE_URL + "/assets/" + img}" alt="${title}" class="gallery__img">
+                            <h2 class="gallery__title-card">${title}</h2>
+                            <p class="gallery__description-card">${desc}</p>
+                            <span class="gallery__price-card">DOP $${price.toFixed(2)}</span>
+                            <a href="${detalleUrl}" class="gallery__btn-card">Ver más</a>
+                        </div>
+                    </div>`;
+			}).join("");
 	}
 
 	// =========================
@@ -126,26 +125,17 @@
 	function mostrarFooter(data) {
 		if (!footer || !data) return;
 		footer.innerHTML = `
-			<div class="footer__content">
-				<div class="footer__title">${data.brand?.title || ""}</div>
-				${(data.columns || [])
-					.map(
-						(col) => `
-					<div class="footer__section">
-						<h4>${col.title}</h4>
-						<ul>
-							${col.links
-								.map(
-									(link) =>
-										`<li><a href="${resolveHref(link.href)}">${link.text}</a></li>`
-								)
-								.join("")}
-						</ul>
-					</div>`
-					)
-					.join("")}
-			</div>
-			<div class="footer__text-copy">${data.copyright || ""}</div>`;
+            <div class="footer__content">
+                <div class="footer__title">${data.brand?.title || ""}</div>
+                ${(data.columns || []).map(col => `
+                    <div class="footer__section">
+						<h4 class="footer__subtitle cossette-titre-bold">${col.title}</h4>
+						<ul class="footer__list">
+                            ${col.links.map(link => `<li><a class="footer__links" href="${resolveHref(link.href)}">${link.text}</a></li>`).join("")}
+                        </ul>
+                    </div>`).join("")}
+            </div>
+            <div class="footer__text-copy">${data.copyright || ""}</div>`;
 	}
 
 	// =========================
@@ -156,8 +146,10 @@
 			const [navbarData, footerData, juegosData] = await Promise.all([
 				fetchJSON(PAGE_JSON.navbar),
 				fetchJSON(PAGE_JSON.footer),
-				fetchAPI(BASE_URL + "api/juegos.php"),
+				fetchAPI(API_URL + "index.php?endpoint=juegos")
 			]);
+
+			console.log("Juegos:", juegosData); // Para depuración
 
 			mostrarNavbar(navbarData);
 			mostrarFooter(footerData);

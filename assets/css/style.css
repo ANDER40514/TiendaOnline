@@ -309,6 +309,12 @@ body {
     transform: translateY(-2px);
 }
 
+.gallery__empty {
+    color: black;
+    font-size: 24px;
+    font-weight: bolder;
+}
+
 /* Footer */
 #footer {
     color: var(--color);
@@ -352,7 +358,6 @@ body {
 .footer__links {
     display: flex;
     flex-direction: column;
-    gap: 6px;
     margin-left: 0;
     font-size: 14px;
     padding: 12px;

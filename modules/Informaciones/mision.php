@@ -1,15 +1,18 @@
 <?php
-$pageTitle = 'Contacto | Tienda Online';
+require_once __DIR__ . '/../../includes/config.php';
+
+$pageTitle = 'Misión | Tienda Online';
 $extraCSS = ['modules/Informaciones/contacto/contacto.css'];
 
 $pageJSON = [
-    'navbar' => 'data/navbar.json',
+    'navbar' => BASE_URL . 'data/navbar.json',
     'gallery' => null,
-    'footer' => 'data/footer.json'
+    'footer' => BASE_URL . 'data/footer.json'
 ];
 
 include __DIR__ . '/../../includes/header.php';
 ?>
+
 
 <main>
     <section class="informacion">
@@ -17,7 +20,12 @@ include __DIR__ . '/../../includes/header.php';
             <section class="mision">
                 <h1 class="mision__title">Misión</h1>
                 <br>
-                <p class="mision__lead">Somos una tienda en línea especializada en la compra y venta de videojuegos. Nuestra misión es facilitar a jugadores y coleccionistas un mercado seguro, sencillo y justo donde encontrar títulos nuevos, clásicos y ediciones especiales, así como dar una segunda vida a los juegos que ya no usan.</p>
+                <p class="mision__lead">
+                    Somos una tienda en línea especializada en la compra y venta de videojuegos. 
+                    Nuestra misión es facilitar a jugadores y coleccionistas un mercado seguro, 
+                    sencillo y justo donde encontrar títulos nuevos, clásicos y ediciones especiales, 
+                    así como dar una segunda vida a los juegos que ya no usan.
+                </p>
 
                 <h2>Nuestros compromisos</h2>
                 <br>
@@ -31,6 +39,5 @@ include __DIR__ . '/../../includes/header.php';
         </div>
     </section>
 </main>
-
 
 <?php include __DIR__ . '/../../includes/footer.php'; ?>

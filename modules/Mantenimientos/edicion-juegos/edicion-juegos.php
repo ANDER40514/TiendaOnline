@@ -28,7 +28,9 @@ include __DIR__ . '/../../../includes/header.php';
         <input type="number" name="precio" id="game-precio" min="1" step="0.01" class="form__input form__input--precio" placeholder="Precio del juego..." required>
 
         <label for="game-consola" class="form__label">Consola:</label>
-        <input type="text" name="consola" id="game-consola" class="form__input form__input--consola" placeholder="Consola donde se puede jugar.." disabled required>
+        <select name="consola" id="game-consola" class="form__input form__input--consola" required>
+            <option value="">Seleccione una consola...</option>
+        </select>
 
         <label for="game-imagen" class="form__label">Imagen:</label>
         <input type="text" name="imagen" id="game-imagen" class="form__input form__input--img" placeholder="URL de la ubicacion de la imagen...">
@@ -61,7 +63,7 @@ include __DIR__ . '/../../../includes/header.php';
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.0/dist/sweetalert2.all.min.js"></script>
-<script src="<?= BASE_URL ?>modules/admin-juegos/admin-juegos.js"></script>
+<script src="<?= BASE_URL ?>modules/mantenimientos/edicion-juegos/edicion-juegos.js"></script>
 
 
 <?php include __DIR__ . '/../../../includes/footer.php'; ?>
