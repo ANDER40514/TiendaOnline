@@ -2,8 +2,8 @@
 	// =========================
 	// Configuración BASE
 	// =========================
-	const BASE_URL = window.location.origin + "/TiendaOnline/"; // Root del proyecto
-	const API_URL = BASE_URL + "api/";                          // Endpoint API
+	const BASE_URL = window.location.origin + "/TiendaOnline/";
+	const API_URL = BASE_URL + "api/";
 
 	// =========================
 	// Archivos base (JSON locales)
@@ -40,13 +40,9 @@
 			if (!res.ok) throw new Error(`Error ${res.status} al consumir la API`);
 			const json = await res.json();
 
-			// Verificamos si hay un array en json.data
 			if (json && Array.isArray(json.data)) return json.data;
-
-			// Si es un solo objeto con id_juego, lo convertimos a array
 			if (json && json.id_juego !== undefined) return [json];
-
-			return []; // cualquier otro caso
+			return [];
 		} catch (err) {
 			console.error("Error al consumir la API:", err);
 			return [];
@@ -58,6 +54,11 @@
 		if (/^(?:[a-z]+:)?\/\//i.test(href) || href.startsWith("/")) return href;
 		if (href.startsWith("#")) return BASE_URL + "index.php" + href;
 		return BASE_URL + href;
+	};
+
+	const getUser = () => {
+		const raw = sessionStorage.getItem("user") || localStorage.getItem("tienda_user");
+		return raw ? JSON.parse(raw) : null;
 	};
 
 	// =========================
@@ -83,6 +84,33 @@
                             ${submenu}
                         </li>`;
 			}).join("");
+
+		// Mostrar login o usuario
+		const user = getUser();
+		const liExtra = document.createElement("li");
+		liExtra.classList.add("navbar__extra");
+
+		if (user) {
+			liExtra.innerHTML = `
+				<a href="#" class="navbar__links navbar__links--user">👤 ${user.cliente || user.usuario || "Usuario"}</a>
+				<a href="#" id="logout-link" class="navbar__links navbar__links--logout">Cerrar sesión</a>
+			`;
+			navList.appendChild(liExtra);
+
+			// Logout
+			const logoutBtn = document.getElementById("logout-link");
+			logoutBtn?.addEventListener("click", (e) => {
+				e.preventDefault();
+				sessionStorage.removeItem("user");
+				localStorage.removeItem("tienda_user");
+				location.reload();
+			});
+		} else {
+			liExtra.innerHTML = `
+				<a href="${BASE_URL}modules/auth/login.php" class="navbar__links navbar__links--login">Iniciar sesión</a>
+			`;
+			navList.appendChild(liExtra);
+		}
 	}
 
 	// =========================
@@ -99,7 +127,7 @@
 
 		galleryContainer.innerHTML = items
 			.map(card => {
-				const img = card.imagen || card.image || "assets/img/no-photo.jpg";
+				const img = card.imagen || card.image || "/img/no-photo.jpg";
 				const title = card.titulo || card.nombre || "Sin título";
 				const desc = card.descripcion || "";
 				const price = parseFloat(card.precio || 0);
@@ -148,8 +176,6 @@
 				fetchJSON(PAGE_JSON.footer),
 				fetchAPI(API_URL + "index.php?endpoint=juegos")
 			]);
-
-			console.log("Juegos:", juegosData); // Para depuración
 
 			mostrarNavbar(navbarData);
 			mostrarFooter(footerData);

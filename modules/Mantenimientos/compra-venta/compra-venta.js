@@ -4,7 +4,8 @@
 const API_JUEGOS = "/TiendaOnline/api/index.php?endpoint=juegos";
 const API_INVENTARIO = "/TiendaOnline/api/index.php?endpoint=inventario";
 const API_CLIENTES = "/TiendaOnline/api/index.php?endpoint=clientes";
-const SUBMIT_ORDER = "/TiendaOnline/modules/mantenimientos/compra-venta/submit_purchase.php";
+const SUBMIT_ORDER =
+    "/TiendaOnline/modules/mantenimientos/compra-venta/submit_purchase.php";
 const LOGIN_PAGE = "/TiendaOnline/modules/auth/login.php";
 
 // =======================================
@@ -44,7 +45,8 @@ function textColorByBg(hex) {
 // Sesión de usuario
 // =======================================
 function getUser() {
-    const raw = sessionStorage.getItem("user");
+    const raw =
+        sessionStorage.getItem("user") || localStorage.getItem("tienda_user");
     return raw ? JSON.parse(raw) : null;
 }
 
@@ -57,6 +59,10 @@ function ensureSession() {
     }
     return true;
 }
+
+document.addEventListener("DOMContentLoaded", async () => {
+    if (!ensureSession()) return;
+});
 
 // =======================================
 // LocalStorage carrito
@@ -114,7 +120,8 @@ function renderJuegos() {
                 ">${escapeHtml(j.nombre_consola)}</span>
             </td>
             <td>${fmt(j.precio)}</td>
-            <td><button data-id="${j.id_juego}" class="compra__catalog-btn compra__catalog-btn--add">Agregar</button></td>
+            <td><button data-id="${j.id_juego
+            }" class="compra__catalog-btn compra__catalog-btn--add">Agregar</button></td>
         `;
         tbody.appendChild(tr);
     });
@@ -245,9 +252,11 @@ function renderCart() {
         tr.innerHTML = `
             <td>${escapeHtml(it.titulo)}</td>
             <td>${fmt(it.precio)}</td>
-            <td><input type="number" min="1" max="100" value="${it.cantidad}" data-id="${it.id}" class="compra__cart-qty" /></td>
+            <td><input type="number" min="1" max="100" value="${it.cantidad
+            }" data-id="${it.id}" class="compra__cart-qty" /></td>
             <td>${fmt(subtotal)}</td>
-            <td><button data-id="${it.id}" class="compra__cart-remove">Quitar</button></td>
+            <td><button data-id="${it.id
+            }" class="compra__cart-remove">Quitar</button></td>
         `;
         tbody.appendChild(tr);
     });
@@ -259,7 +268,10 @@ function renderCart() {
     });
 
     document.querySelector(".compra__cart-total").innerText = fmt(total);
-    document.querySelector(".compra__order-data").value = JSON.stringify({ items, total });
+    document.querySelector(".compra__order-data").value = JSON.stringify({
+        items,
+        total,
+    });
 }
 
 // =======================================
@@ -276,13 +288,21 @@ async function checkout() {
     }
 
     if (!order || !Array.isArray(order.items) || order.items.length === 0) {
-        Swal.fire({ icon: "info", title: "Carrito vacío", text: "Agrega productos antes de comprar." });
+        Swal.fire({
+            icon: "info",
+            title: "Carrito vacío",
+            text: "Agrega productos antes de comprar.",
+        });
         return;
     }
 
     for (const it of order.items) {
         if (!(await checkStock(it.id, it.cantidad))) {
-            Swal.fire({ icon: "error", title: "Stock insuficiente", text: `No hay suficiente stock para ${it.titulo}.` });
+            Swal.fire({
+                icon: "error",
+                title: "Stock insuficiente",
+                text: `No hay suficiente stock para ${it.titulo}.`,
+            });
             return;
         }
     }
@@ -292,19 +312,42 @@ async function checkout() {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(order),
+            credentials: "include",
         });
-        const json = await res.json();
-        if (res.ok) {
-            Swal.fire({ icon: "success", title: "Compra realizada", text: json.messages ? "Compra procesada" : "Gracias" });
+
+        const text = await res.text();
+        console.log("🛰️ Respuesta bruta del servidor:", text);
+
+        let json;
+        try {
+            json = JSON.parse(text);
+        } catch (e) {
+            throw new Error("La respuesta del servidor no es JSON válido");
+        }
+
+        if (res.ok && json.ok) {
+            Swal.fire({
+                icon: "success",
+                title: "Compra realizada correctamente",
+                text: "¡Gracias por su compra!",
+            });
             cart = {};
             saveCart();
             renderCart();
         } else {
-            Swal.fire({ icon: "error", title: "Error", text: json.error || "No se pudo crear la orden" });
+            Swal.fire({
+                icon: "error",
+                title: "Error en la compra",
+                text: json.error || "Error desconocido del servidor",
+            });
         }
     } catch (err) {
-        console.error(err);
-        Swal.fire({ icon: "error", title: "Error", text: "Error de red al enviar la orden." });
+        console.error("🚨 Error durante checkout:", err);
+        Swal.fire({
+            icon: "error",
+            title: "Error durante checkout",
+            text: err.message,
+        });
     }
 }
 
@@ -316,25 +359,36 @@ document.addEventListener("DOMContentLoaded", () => {
     fetchJuegos();
     renderCart();
 
-    document.getElementById("realizar-compra")?.addEventListener("click", checkout);
+    document
+        .getElementById("realizar-compra")
+        ?.addEventListener("click", checkout);
 
     // Quitar del carrito
-    document.querySelector(".compra__cart-table tbody")?.addEventListener("click", (e) => {
-        const btn = e.target.closest(".compra__cart-remove");
-        if (!btn) return;
-        const id = btn.dataset.id;
-        Swal.fire({
-            title: "Quitar producto",
-            text: "¿Deseas quitar este producto del carrito?",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonText: "Sí, quitar",
-            cancelButtonText: "Cancelar",
-        }).then((result) => {
-            if (result.isConfirmed) {
-                removeFromCart(id);
-                Swal.fire({ toast: true, position: "top-end", icon: "success", title: "Producto quitado", showConfirmButton: false, timer: 1200 });
-            }
+    document
+        .querySelector(".compra__cart-table tbody")
+        ?.addEventListener("click", (e) => {
+            const btn = e.target.closest(".compra__cart-remove");
+            if (!btn) return;
+            const id = btn.dataset.id;
+            Swal.fire({
+                title: "Quitar producto",
+                text: "¿Deseas quitar este producto del carrito?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Sí, quitar",
+                cancelButtonText: "Cancelar",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    removeFromCart(id);
+                    Swal.fire({
+                        toast: true,
+                        position: "top-end",
+                        icon: "success",
+                        title: "Producto quitado",
+                        showConfirmButton: false,
+                        timer: 1200,
+                    });
+                }
+            });
         });
-    });
 });

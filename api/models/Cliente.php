@@ -35,7 +35,7 @@ class ClienteModel
     public static function obtenerPorId($id)
     {
         $conn = self::getConnection();
-        $stmt = $conn->prepare("SELECT id_cliente, id_RolUsuario, cliente, email, direccion, telefono  FROM usuario WHERE id_cliente = ? LIMIT 1");
+        $stmt = $conn->prepare("SELECT id_cliente, id_RolUsuario, cliente, email, direccion, telefono FROM cliente WHERE id_cliente = ? LIMIT 1");
         $stmt->bind_param("i", $id);
         $stmt->execute();
         $res = $stmt->get_result();
@@ -44,23 +44,46 @@ class ClienteModel
 
         return $data
             ? ['ok' => true, 'data' => $data]
-            : ['ok' => false, 'error' => 'Usuario no encontrado'];
+            : ['ok' => false, 'error' => 'Cliente no encontrado'];
     }
 
+    // insertar cliente con todos los campos
     public static function crear($data)
     {
         $conn = self::getConnection();
-        if (!isset($data['nombre'], $data['email'], $data['rol'])) {
+
+        if (
+            empty($data['usuario']) ||
+            empty($data['email']) ||
+            empty($data['direccion']) ||
+            empty($data['telefono']) ||
+            empty($data['password']) ||
+            empty($data['id_RolUsuario'])
+        ) {
             return ['ok' => false, 'error' => 'Faltan campos requeridos'];
         }
 
-        $stmt = $conn->prepare("INSERT INTO cliente (cliente, email, id_RolUsuario) VALUES (?, ?, ?)");
-        $stmt->bind_param("ssi", $data['cliente'], $data['email'], $data['id_RolUsuario']);
+        $hashedPassword = password_hash($data['password'], PASSWORD_DEFAULT);
+
+        $stmt = $conn->prepare("INSERT INTO cliente (cliente, email, direccion, telefono, password, id_RolUsuario)
+                                VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param(
+            "sssssi",
+            $data['usuario'],
+            $data['email'],
+            $data['direccion'],
+            $data['telefono'],
+            $hashedPassword,
+            $data['id_RolUsuario']
+        );
+
         $ok = $stmt->execute();
         $id = $conn->insert_id;
         $stmt->close();
 
-        return $ok ? ['ok' => true, 'id' => $id] : ['ok' => false, 'error' => $conn->error];
+        return $ok
+            ? ['ok' => true, 'id' => $id]
+            : ['ok' => false, 'error' => $conn->error];
     }
 
     public static function actualizar($id, $data)
@@ -84,5 +107,39 @@ class ClienteModel
 
         return $ok ? ['ok' => true] : ['ok' => false, 'error' => $conn->error];
     }
+
+    public static function autenticar($usuario, $password)
+    {
+        $conn = self::getConnection();
+        $stmt = $conn->prepare("SELECT id_cliente, cliente, password, id_RolUsuario FROM cliente WHERE cliente = ? LIMIT 1");
+        $stmt->bind_param("s", $usuario);
+        $stmt->execute();
+        $res = $stmt->get_result();
+
+        if ($res->num_rows === 0) {
+            return ['ok' => false, 'error' => 'Usuario no encontrado'];
+        }
+
+        $user = $res->fetch_assoc();
+        $stmt->close();
+
+        if (password_verify($password, $user['password'])) {
+            unset($user['password']);
+
+            // ✅ Aquí agregamos la sesión
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
+
+            $_SESSION['user'] = [
+                'id_cliente' => $user['id_cliente'],
+                'usuario' => $user['cliente'],
+                'rol' => $user['id_RolUsuario']
+            ];
+
+            return ['ok' => true, 'data' => $_SESSION['user']];
+        } else {
+            return ['ok' => false, 'error' => 'Contraseña incorrecta'];
+        }
+    }
 }
-?>

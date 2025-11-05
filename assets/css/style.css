@@ -133,6 +133,11 @@ body {
     color: #fff;
 }
 
+.navbar__links--user,
+.navbar__links--logout {
+    font-weight: bolder;
+}
+
 /* Seccion de Inicio */
 .inicio {
     text-align: center;

@@ -26,7 +26,7 @@ include __DIR__ . '/../../includes/header.php';
         <h2 class="auth__title">Registrarse</h2>
         <button id="toggle-register" type="button" class="auth__btn auth__btn--secondary">Mostrar formulario de registro</button>
         <div id="register-panel" class="auth__register-panel hidden">
-            <form id="register-form" class="auth__form auth__form--register">
+            <form method="post" id="register-form" class="auth__form auth__form--register">
                 <label>Usuario
                     <input type="text" name="usuario"
                     placeholder="Usuario..."  />
@@ -47,7 +47,7 @@ include __DIR__ . '/../../includes/header.php';
                     placeholder="Telefono..." />
                 </label>
                 <label>Rol
-                    <select name="id_RolUsuario" class="auth__role-select">
+                    <select id="form__select" name="id_RolUsuario" class="auth__role-select">
                         <option value="">Cargando roles...</option>
                     </select>
                 </label>

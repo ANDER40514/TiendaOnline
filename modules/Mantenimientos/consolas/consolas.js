@@ -56,7 +56,7 @@
             Swal.fire({
                 icon: "error",
                 title: "Error",
-                text: err.message || "No se pudo cargar la lista de consolas"
+                text: err.message || "No se pudo cargar la lista de consolas",
             });
         }
     }
@@ -69,11 +69,15 @@
 
         tbody.innerHTML = items
             .map(
-                i => `
+                (i) => `
             <tr class="table__row">
                 <td class="table__data table__data--id">${i.id_consola}</td>
-                <td class="table__data table__data--code">${escapeHtml(i.code)}</td>
-                <td class="table__data table__data--name">${escapeHtml(i.nombre)}</td>
+                <td class="table__data table__data--code">${escapeHtml(
+                    i.code
+                )}</td>
+                <td class="table__data table__data--name">${escapeHtml(
+                    i.nombre
+                )}</td>
                 <td class="table__data table__data--color">
                     <span style="
                         display:inline-block;
@@ -86,8 +90,10 @@
                     </span>
                 </td>
                 <td class="table__data table__data--actions">
-                    <button class="table__btn admin-consola__edit" data-id="${i.id_consola}">Editar</button>
-                    <button class="table__btn admin-consola__delete" data-id="${i.id_consola}">Eliminar</button>
+                    <button class="table__btn admin-consola__edit" data-id="${i.id_consola
+                    }">Editar</button>
+                    <button class="table__btn admin-consola__delete" data-id="${i.id_consola
+                    }">Eliminar</button>
                 </td>
             </tr>`
             )
@@ -128,16 +134,20 @@
 
         try {
             const method = editingId ? "PUT" : "POST";
-            if (editingId) payload.id_consola = editingId;
+            let url = API;
+            if (editingId) {
+                url += "&id=" + encodeURIComponent(editingId);
+            }
 
-            const res = await fetch(API, {
+            const res = await fetch(url, {
                 method,
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload),
             });
 
             const json = await res.json();
-            if (!res.ok) throw new Error(json.error || json.message || "Error en la API");
+            if (!res.ok)
+                throw new Error(json.error || json.message || "Error en la API");
 
             Swal.fire({
                 toast: true,
@@ -162,27 +172,34 @@
         }
     });
 
-    // =========================
+    // =============================
     // Editar / Eliminar desde tabla
-    // =========================
+    // ===========================
     tbody?.addEventListener("click", async (e) => {
-        const edit = e.target.closest(".admin-consola__edit");
-        const del = e.target.closest(".admin-consola__delete");
+        const editBtn = e.target.closest(".admin-consola__edit");
+        const delBtn = e.target.closest(".admin-consola__delete");
 
-        if (edit) {
-            const id = edit.dataset.id;
+        // ----- EDITAR -----
+        if (editBtn) {
+            const id = editBtn.dataset.id;
             editingId = id;
 
             try {
-                const res = await fetch(API + "&id=" + encodeURIComponent(id));
+                const res = await fetch(`${API}&id=${encodeURIComponent(id)}`);
                 if (!res.ok) throw new Error("Error " + res.status);
+
                 const data = await res.json();
 
-                if (!data) throw new Error("Consola no encontrada");
+                // Asegurarnos que venga un array con al menos un elemento
+                if (!Array.isArray(data) || data.length === 0) {
+                    throw new Error("Consola no encontrada");
+                }
 
-                fieldCode.value = data.code || "";
-                fieldName.value = data.nombre || "";
-                fieldColor.value = data.consola_color || "#cccccc";
+                const consola = data[0];
+
+                fieldCode.value = consola.code || "";
+                fieldName.value = consola.nombre || "";
+                fieldColor.value = consola.consola_color || "#cccccc";
 
                 openPanel();
             } catch (err) {
@@ -190,13 +207,14 @@
                 Swal.fire({
                     icon: "error",
                     title: "Error",
-                    text: err.message || "No se pudo cargar la consola"
+                    text: err.message || "No se pudo cargar la consola",
                 });
             }
         }
 
-        if (del) {
-            const id = del.dataset.id;
+        // ----- ELIMINAR -----
+        if (delBtn) {
+            const id = delBtn.dataset.id;
 
             const choice = await Swal.fire({
                 title: "Eliminar consola?",
@@ -209,7 +227,7 @@
             if (!choice.isConfirmed) return;
 
             try {
-                const res = await fetch(API + "&id=" + encodeURIComponent(id), {
+                const res = await fetch(`${API}&id=${encodeURIComponent(id)}`, {
                     method: "DELETE",
                 });
                 const json = await res.json();
@@ -224,7 +242,7 @@
                     timer: 1200,
                 });
 
-                fetchList();
+                fetchList(); // refresca la lista
             } catch (err) {
                 console.error(err);
                 Swal.fire({

@@ -99,17 +99,27 @@ class Consola
 
         $sql = 'UPDATE consola SET ' . implode(', ', $fields) . ' WHERE id_consola=?';
         $stmt = $this->conn->prepare($sql);
+
+        if (!$stmt) {
+            return ['error' => 'Error en la preparación: ' . $this->conn->error];
+        }
+
         $params[] = $id;
         $types .= 'i';
 
         $stmt->bind_param($types, ...$params);
 
         if ($stmt->execute()) {
-            return ['ok' => true];
+            if ($stmt->affected_rows > 0) {
+                return ['ok' => true, 'updated' => $stmt->affected_rows];
+            } else {
+                return ['ok' => false, 'mensaje' => 'No se actualizó ningún registro'];
+            }
         }
 
-        return ['error' => $this->conn->error];
+        return ['error' => $stmt->error];
     }
+
 
     public function delete($id)
     {
