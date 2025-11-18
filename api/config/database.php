@@ -2,9 +2,9 @@
 class Database {
     private $host = "localhost";
     private $user = "root";
-    private $pass = "";
+    private $pass = "mysql";
     private $dbname = "mi_tienda";
-    private $port = "3307";
+    private $port = "3309";
     private $conn;
 
     public function connect() {
