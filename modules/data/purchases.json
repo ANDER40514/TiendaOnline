@@ -4,7 +4,7 @@
             "id_cliente": 6,
             "usuario": "Anderson4",
             "rol": 3
-        },
+        }, 
         "items": [
             {
                 "id": "5",
@@ -20,41 +20,6 @@
                 "id": 5,
                 "message": "Compra realizada correctamente",
                 "monto": 1400
-            }
-        ]
-    },
-    {
-        "cliente": {
-            "id_cliente": 3,
-            "usuario": "Anderson2",
-            "rol": 2
-        },
-        "items": [
-            {
-                "id": "1",
-                "titulo": "Mario Bros",
-                "precio": 1920,
-                "cantidad": 1
-            },
-            {
-                "id": "2",
-                "titulo": "nuevo",
-                "precio": 1500,
-                "cantidad": 1
-            }
-        ],
-        "total": 3420,
-        "fecha": "2025-11-19 01:09:55",
-        "mensajes": [
-            {
-                "id": 1,
-                "message": "Compra realizada correctamente",
-                "monto": 1920
-            },
-            {
-                "id": 2,
-                "message": "Compra realizada correctamente",
-                "monto": 1500
             }
         ]
     }

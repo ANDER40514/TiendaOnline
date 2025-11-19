@@ -82,16 +82,12 @@
             if (!res.ok) throw new Error(`Error ${res.status}`);
             const json = await res.json();
 
-            console.log("JSON recibido:", json);
-
-            // Detecta si data es objeto o array
             const producto = Array.isArray(json.data)
                 ? json.data[0]
                 : (json.data && typeof json.data === 'object')
                     ? json.data
                     : null;
 
-            console.log("Producto extraído:", producto);
 
             if (!producto) {
                 detalleEl.innerHTML = "<p style='color:black; font-weight:bold;'>Producto no encontrado.</p>";

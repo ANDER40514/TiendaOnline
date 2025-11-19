@@ -7,7 +7,8 @@ $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
 
 $rootFolder = '/TiendaOnline/'; 
 
-define('BASE_PATH', __DIR__ . '/../..'); // Ajusta según la ubicación de config.php
+define('BASE_PATH', __DIR__ . '/../..');
+
 // BASE_URL apunta SIEMPRE al root del sitio
 define('BASE_URL', $protocol . '://' . $host . $rootFolder);
 
