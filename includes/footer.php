@@ -15,5 +15,5 @@ if (!empty($extraJS)) {
     }
 }
 ?>
-</body>
+    </body>
 </html>

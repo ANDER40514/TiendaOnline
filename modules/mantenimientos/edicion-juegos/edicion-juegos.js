@@ -45,104 +45,100 @@ document.addEventListener("DOMContentLoaded", async () => {
     // =========================
     // Cargar consolas
     // =========================
-// Reemplaza la función cargarConsolas actual por esta
-async function cargarConsolas() {
-    const url = BASE_API + "consolas";
+    async function cargarConsolas() {
+        const url = BASE_API + "consolas";
 
-    try {
-        // Hacemos fetch y leemos texto primero (para poder mostrar errores HTML si los hay)
-        const resp = await fetch(url);
-        if (!resp.ok) throw new Error(`Error HTTP ${resp.status}`);
+        try {
+            // Hacemos fetch y leemos texto primero (para poder mostrar errores HTML si los hay)
+            const resp = await fetch(url);
+            if (!resp.ok) throw new Error(`Error HTTP ${resp.status}`);
 
-        const contentType = resp.headers.get("content-type") || "";
-        const text = await resp.text();
+            const contentType = resp.headers.get("content-type") || "";
+            const text = await resp.text();
 
-        // Intentamos parsear JSON; si falla, mostramos el texto crudo (útil para ver errores PHP)
-        let parsed;
-        if (contentType.includes("application/json")) {
-            try {
-                parsed = JSON.parse(text);
-            } catch (err) {
-                console.error("Respuesta con content-type JSON pero no es JSON válido:", text);
-                throw new Error("JSON inválido recibido del endpoint de consolas. Revisa la respuesta en la red o en el navegador.");
+            // Intentamos parsear JSON; si falla, mostramos el texto crudo para debug
+            let parsed;
+            if (contentType.includes("application/json")) {
+                try {
+                    parsed = JSON.parse(text);
+                } catch (err) {
+                    console.error("Respuesta con content-type JSON pero no es JSON válido:", text);
+                    throw new Error("JSON inválido recibido del endpoint de consolas. Revisa la respuesta en la red o en el navegador.");
+                }
+            } else {
+                // si no viene como JSON (ej. HTML de error), loggeamos y lanzamos
+                console.error("Respuesta no JSON (text):", text);
+                throw new Error("Respuesta inesperada no-JSON del endpoint de consolas. Revisa la URL en el navegador.");
             }
-        } else {
-            // si no viene como JSON (ej. HTML de error), loggeamos y lanzamos
-            console.error("Respuesta no JSON (text):", text);
-            throw new Error("Respuesta inesperada no-JSON del endpoint de consolas. Revisa la URL en el navegador.");
-        }
 
-        // parsed puede llegar en varias formas:
-        // 1) array directo -> [ { id_consola, nombre, consola_color, code }, ... ]
-        // 2) { ok: true, data: [...] }
-        // 3) { data: [...] }
-        // 4) { consoles: [...] } etc.
-        let items = null;
+            // parsed puede llegar en varias formas:
+            // 1) array directo -> [ { id_consola, nombre, consola_color, code }, ... ]
+            // 2) { ok: true, data: [...] }
+            // 3) { data: [...] }
+            // 4) { consoles: [...] } etc.
+            let items = null;
 
-        if (Array.isArray(parsed)) {
-            items = parsed;
-        } else if (parsed && Array.isArray(parsed.data)) {
-            items = parsed.data;
-        } else if (parsed && Array.isArray(parsed.consolas)) {
-            items = parsed.consolas;
-        } else if (parsed && Array.isArray(parsed.items)) {
-            items = parsed.items;
-        } else {
-            // Si parsed es un objeto con un solo array dentro, intentamos encontrarlo
-            for (const k of Object.keys(parsed)) {
-                if (Array.isArray(parsed[k])) {
-                    items = parsed[k];
-                    break;
+            if (Array.isArray(parsed)) {
+                items = parsed;
+            } else if (parsed && Array.isArray(parsed.data)) {
+                items = parsed.data;
+            } else if (parsed && Array.isArray(parsed.consolas)) {
+                items = parsed.consolas;
+            } else if (parsed && Array.isArray(parsed.items)) {
+                items = parsed.items;
+            } else {
+                // Si parsed es un objeto con un solo array dentro, intentamos encontrarlo
+                for (const k of Object.keys(parsed)) {
+                    if (Array.isArray(parsed[k])) {
+                        items = parsed[k];
+                        break;
+                    }
                 }
             }
+
+            if (!Array.isArray(items)) {
+                console.error("No se encontró un array de consolas en la respuesta.", parsed);
+                throw new Error("Formato de respuesta inesperado (no se encontró array). Revisa el endpoint.");
+            }
+
+            items = items.map(it => {
+                return {
+                    id_consola: it.id_consola ?? it.id ?? null,
+                    code: it.code ?? it.codigo ?? "",
+                    nombre: (it.nombre ?? it.nombre_consola ?? it.name ?? "").toString().trim(),
+                    consola_color: (it.consola_color ?? it.color ?? "#cccccc").toString().trim()
+                };
+            });
+
+            // Eliminar entradas sin nombre y duplicados por nombre
+            const map = new Map();
+            items.forEach(it => {
+                if (!it.nombre) return; // ignorar sin nombre
+                if (!map.has(it.nombre)) map.set(it.nombre, it);
+            });
+            const uniques = Array.from(map.values());
+
+            // Guardamos global y poblamos select
+            consolasGlobal = uniques;
+
+            selectConsola.innerHTML =
+                `<option value="">Seleccione una consola...</option>` +
+                consolasGlobal
+                    .map(c => {
+                        const safeName = c.nombre.replace(/"/g, '&quot;');
+                        return `<option value="${safeName}">${safeName}</option>`;
+                    })
+                    .join("");
+
+        } catch (err) {
+            console.error("Error cargando consolas:", err);
+            Swal.fire({
+                icon: "error",
+                title: "Error al cargar consolas",
+                text: err.message || "Revisa la consola del navegador para más detalles."
+            });
         }
-
-        if (!Array.isArray(items)) {
-            console.error("No se encontró un array de consolas en la respuesta.", parsed);
-            throw new Error("Formato de respuesta inesperado (no se encontró array). Revisa el endpoint.");
-        }
-
-        // Normalizar nombres: soportamos distintas propiedades posibles
-        items = items.map(it => {
-            return {
-                id_consola: it.id_consola ?? it.id ?? null,
-                code: it.code ?? it.codigo ?? "",
-                nombre: (it.nombre ?? it.nombre_consola ?? it.name ?? "").toString().trim(),
-                consola_color: (it.consola_color ?? it.color ?? "#cccccc").toString().trim()
-            };
-        });
-
-        // Eliminar entradas sin nombre y duplicados por nombre (keep first)
-        const map = new Map();
-        items.forEach(it => {
-            if (!it.nombre) return; // ignorar sin nombre
-            if (!map.has(it.nombre)) map.set(it.nombre, it);
-        });
-        const uniques = Array.from(map.values());
-
-        // Guardamos global y poblamos select
-        consolasGlobal = uniques;
-
-        // build options
-        selectConsola.innerHTML =
-            `<option value="">Seleccione una consola...</option>` +
-            consolasGlobal
-                .map(c => {
-                    const safeName = c.nombre.replace(/"/g, '&quot;');
-                    return `<option value="${safeName}">${safeName}</option>`;
-                })
-                .join("");
-
-    } catch (err) {
-        console.error("Error cargando consolas:", err);
-        // Mensaje visible
-        Swal.fire({
-            icon: "error",
-            title: "Error al cargar consolas",
-            text: err.message || "Revisa la consola del navegador para más detalles."
-        });
     }
-}
 
 
     // =========================

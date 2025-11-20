@@ -17,18 +17,18 @@ class AuthController
             exit;
         }
 
-session_name("PHPSESSID");
+        session_name("PHPSESSID");
 
-session_set_cookie_params([
-    'lifetime' => 0,
-    'path' => '/',     
-    'secure' => false,
-    'httponly' => false,
-    'samesite' => 'Lax'
-]);
+        session_set_cookie_params([
+            'lifetime' => 0,
+            'path' => '/',
+            'secure' => false,
+            'httponly' => false,
+            'samesite' => 'Lax'
+        ]);
 
-session_save_path('/var/www/html/TiendaOnline/sessions');
-session_start();
+        session_save_path('/var/www/html/TiendaOnline/sessions');
+        session_start();
 
 
         require __DIR__ . '/../';

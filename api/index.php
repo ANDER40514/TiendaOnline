@@ -226,30 +226,26 @@ switch ($endpoint) {
         }
         break;
 
-
     // =======================
     // INVENTARIO
     // =======================
-case 'inventario':
-    require_once __DIR__ . '/controllers/InventarioController.php';
-    require_once __DIR__ . '/models/InventarioModel.php';
+    case 'inventario':
+        require_once __DIR__ . '/controllers/InventarioController.php';
+        require_once __DIR__ . '/models/InventarioModel.php';
 
-    $controller = new InventarioController($conn);
+        $controller = new InventarioController($conn);
 
-    $id = isset($_GET['id']) ? intval($_GET['id']) : null;
-    $method = $_SERVER['REQUEST_METHOD'];
+        $id = isset($_GET['id']) ? intval($_GET['id']) : null;
+        $method = $_SERVER['REQUEST_METHOD'];
 
-    $controller->handleRequest($method, $id);
-    break;
-
-
+        $controller->handleRequest($method, $id);
+        break;
 
     case 'auth':
         require_once __DIR__ . '/controllers/AuthController.php';
         $controller = new AuthController();
         $controller->handleRequest();
         break;
-
 
     default:
         http_response_code(404);

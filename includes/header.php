@@ -7,13 +7,13 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Variables adicionales
 $pageTitle = $pageTitle ?? 'Tienda Online';
 $extraCSS = $extraCSS ?? [];
 ?>
 
 <!doctype html>
 <html lang="es">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -43,9 +43,10 @@ $extraCSS = $extraCSS ?? [];
 
     <link rel="shortcut icon" href="<?= BASE_URL ?>assets/img/store_icon.ico" type="image/x-icon">
 </head>
+
 <body>
-<header>
-    <nav class="navbar" id="navbar">
-        <ul class="navbar__list" id="main-nav"></ul>
-    </nav>
-</header>
+    <header>
+        <nav class="navbar" id="navbar">
+            <ul class="navbar__list" id="main-nav"></ul>
+        </nav>
+    </header>

@@ -16,7 +16,7 @@ include __DIR__ . '/../../includes/header.php';
                 <input type="text" name="usuario" placeholder="Usuario...." />
             </label>
             <label>Contraseña
-                <input type="password" name="password" placeholder="Contraseña..."  />
+                <input type="password" name="password" placeholder="Contraseña..." />
             </label>
             <button type="submit" class="auth__btn">Entrar</button>
         </form>
@@ -29,22 +29,22 @@ include __DIR__ . '/../../includes/header.php';
             <form method="post" id="register-form" class="auth__form auth__form--register">
                 <label>Usuario
                     <input type="text" name="usuario"
-                    placeholder="Usuario..."  />
+                        placeholder="Usuario..." />
                 </label>
                 <label>Contraseña
-                    <input type="password" name="password"  placeholder="contraseña..."  />
+                    <input type="password" name="password" placeholder="contraseña..." />
                 </label>
                 <label>Email
                     <input type="email" name="email"
-                    placeholder="Correo..." />
+                        placeholder="Correo..." />
                 </label>
                 <label>Dirección
                     <input type="text" name="direccion"
-                    placeholder="Direccion..." />
+                        placeholder="Direccion..." />
                 </label>
                 <label>Teléfono
                     <input type="text" name="telefono"
-                    placeholder="Telefono..." />
+                        placeholder="Telefono..." />
                 </label>
                 <label>Rol
                     <select id="form__select" name="id_RolUsuario" class="auth__role-select">

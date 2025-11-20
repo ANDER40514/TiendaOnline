@@ -104,26 +104,25 @@ class ClienteController
     // =========================
     // LOGIN
     // =========================
-private function login(array $input)
-{
-    $usuario = $input['usuario'] ?? '';
-    $password = $input['password'] ?? '';
+    private function login(array $input)
+    {
+        $usuario = $input['usuario'] ?? '';
+        $password = $input['password'] ?? '';
 
-    if (!$usuario || !$password) {
-        http_response_code(400);
-        echo json_encode(['ok' => false, 'error' => 'Usuario y contraseña requeridos']);
-        return;
+        if (!$usuario || !$password) {
+            http_response_code(400);
+            echo json_encode(['ok' => false, 'error' => 'Usuario y contraseña requeridos']);
+            return;
+        }
+
+        $res = ClienteModel::autenticar($usuario, $password);
+
+        if ($res['ok']) {
+            http_response_code(200);
+            echo json_encode(['ok' => true, 'data' => $res['user']], JSON_UNESCAPED_UNICODE);
+        } else {
+            http_response_code(401);
+            echo json_encode(['ok' => false, 'error' => $res['error']], JSON_UNESCAPED_UNICODE);
+        }
     }
-
-    $res = ClienteModel::autenticar($usuario, $password);
-
-    if ($res['ok']) {
-        http_response_code(200);
-        echo json_encode(['ok' => true, 'data' => $res['user']], JSON_UNESCAPED_UNICODE);
-    } else {
-        http_response_code(401);
-        echo json_encode(['ok' => false, 'error' => $res['error']], JSON_UNESCAPED_UNICODE);
-    }
-}
-
 }

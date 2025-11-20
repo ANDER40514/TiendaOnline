@@ -1,6 +1,6 @@
 <?php
-// modules/mantenimientos/inventario/inventarioModel.php
-class InventarioModel {
+class InventarioModel
+{
 
     private $conn;
 
@@ -9,7 +9,8 @@ class InventarioModel {
         $this->conn = $db;
     }
 
-    public function getById($id) {
+    public function getById($id)
+    {
         try {
             $stmt = $this->conn->prepare('SELECT id_juego, cantidad FROM inventario WHERE id_juego = ? LIMIT 1');
             if (!$stmt) return null;
@@ -25,7 +26,8 @@ class InventarioModel {
         }
     }
 
-    public function getAll() {
+    public function getAll()
+    {
         try {
             $result = $this->conn->query('SELECT id_juego, cantidad FROM inventario');
             if (!$result) return [];
@@ -38,7 +40,8 @@ class InventarioModel {
         }
     }
 
-    public function create($data) {
+    public function create($data)
+    {
         try {
             if (!isset($data['id_juego']) || !isset($data['cantidad'])) {
                 return ['ok' => false, 'error' => 'Campos requeridos faltantes'];
@@ -64,7 +67,8 @@ class InventarioModel {
         }
     }
 
-    public function update($id, $data) {
+    public function update($id, $data)
+    {
         try {
             if (!isset($data['cantidad'])) {
                 return ['ok' => false, 'error' => 'Campo cantidad requerido'];
@@ -90,7 +94,8 @@ class InventarioModel {
         }
     }
 
-    public function delete($id) {
+    public function delete($id)
+    {
         try {
             $stmt = $this->conn->prepare('DELETE FROM inventario WHERE id_juego = ?');
             if (!$stmt) return ['ok' => false, 'error' => $this->conn->error];

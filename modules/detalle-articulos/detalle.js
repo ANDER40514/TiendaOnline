@@ -102,11 +102,11 @@
             const msgEl = document.querySelector(".detalle__purchase-msg");
 
             const loadCart = () => {
-                try { return JSON.parse(localStorage.getItem("tienda_cart")) || {}; } 
+                try { return JSON.parse(localStorage.getItem("tienda_cart")) || {}; }
                 catch (e) { return {}; }
             };
             const saveCart = (cart) => {
-                try { localStorage.setItem("tienda_cart", JSON.stringify(cart)); } 
+                try { localStorage.setItem("tienda_cart", JSON.stringify(cart)); }
                 catch (e) { }
             };
 

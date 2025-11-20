@@ -80,17 +80,17 @@ class ClienteModel
 
             session_save_path(__DIR__ . '/../../sessions');
             if (session_status() === PHP_SESSION_NONE) {
-    session_name('PHPSESSID');
-    session_save_path(realpath(__DIR__ . '/../../sessions'));
-    session_start();
+                session_name('PHPSESSID');
+                session_save_path(realpath(__DIR__ . '/../../sessions'));
+                session_start();
 
 
-            $_SESSION['user'] = [
-                'id_cliente' => $user['id_cliente'],
-                'usuario' => $user['usuario'],
-                'rol' => $user['id_RolUsuario']
-            ];
-        }
+                $_SESSION['user'] = [
+                    'id_cliente' => $user['id_cliente'],
+                    'usuario' => $user['usuario'],
+                    'rol' => $user['id_RolUsuario']
+                ];
+            }
 
             return ['ok' => true, 'user' => $_SESSION['user']];
         } catch (\Exception $e) {
@@ -98,60 +98,58 @@ class ClienteModel
         }
     }
 
-
     // =========================
     // CREAR REGISTRO
     // =========================
-public static function crear($data)
-{
-    $conn = self::getConnection();
+    public static function crear($data)
+    {
+        $conn = self::getConnection();
 
-    if (
-        empty($data['usuario']) ||
-        empty($data['email']) ||
-        empty($data['direccion']) ||
-        empty($data['telefono']) ||
-        empty($data['password']) ||
-        empty($data['id_RolUsuario'])
-    ) {
-        return ['ok' => false, 'error' => 'Faltan campos requeridos'];
-    }
+        if (
+            empty($data['usuario']) ||
+            empty($data['email']) ||
+            empty($data['direccion']) ||
+            empty($data['telefono']) ||
+            empty($data['password']) ||
+            empty($data['id_RolUsuario'])
+        ) {
+            return ['ok' => false, 'error' => 'Faltan campos requeridos'];
+        }
 
-    // Validar existencia previa
-    $stmt = $conn->prepare("SELECT id_cliente FROM cliente WHERE cliente=? OR email=? LIMIT 1");
-    $stmt->bind_param("ss", $data['usuario'], $data['email']);
-    $stmt->execute();
-    $res = $stmt->get_result();
-    if ($res->num_rows > 0) return ['ok' => false, 'error' => 'Usuario o email ya existe'];
-    $stmt->close();
+        // Validar existencia previa
+        $stmt = $conn->prepare("SELECT id_cliente FROM cliente WHERE cliente=? OR email=? LIMIT 1");
+        $stmt->bind_param("ss", $data['usuario'], $data['email']);
+        $stmt->execute();
+        $res = $stmt->get_result();
+        if ($res->num_rows > 0) return ['ok' => false, 'error' => 'Usuario o email ya existe'];
+        $stmt->close();
 
-    $hashedPassword = password_hash($data['password'], PASSWORD_DEFAULT);
+        $hashedPassword = password_hash($data['password'], PASSWORD_DEFAULT);
 
-    $stmt = $conn->prepare("INSERT INTO cliente (cliente, email, direccion, telefono, password, id_RolUsuario)
+        $stmt = $conn->prepare("INSERT INTO cliente (cliente, email, direccion, telefono, password, id_RolUsuario)
                             VALUES (?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param(
-        "sssssi",
-        $data['usuario'],      // <- Mapeo correcto a la columna cliente
-        $data['email'],
-        $data['direccion'],
-        $data['telefono'],
-        $hashedPassword,
-        $data['id_RolUsuario']
-    );
+        $stmt->bind_param(
+            "sssssi",
+            $data['usuario'],
+            $data['email'],
+            $data['direccion'],
+            $data['telefono'],
+            $hashedPassword,
+            $data['id_RolUsuario']
+        );
 
-    $ok = $stmt->execute();
-    $id = $conn->insert_id;
-    $stmt->close();
+        $ok = $stmt->execute();
+        $id = $conn->insert_id;
+        $stmt->close();
 
-    if (!$ok) {
-    return ['ok' => false, 'error' => $stmt->error ?: $conn->error];
-}
+        if (!$ok) {
+            return ['ok' => false, 'error' => $stmt->error ?: $conn->error];
+        }
 
-    return $ok
-        ? ['ok' => true, 'id' => $id]
-        : ['ok' => false, 'error' => $conn->error];
-}
-
+        return $ok
+            ? ['ok' => true, 'id' => $id]
+            : ['ok' => false, 'error' => $conn->error];
+    }
 
     // =========================
     // ACTUALIZAR
@@ -180,8 +178,4 @@ public static function crear($data)
 
         return $ok ? ['ok' => true] : ['ok' => false, 'error' => $conn->error];
     }
-
-    // =========================
-    // AUTENTICACIÓN / LOGIN
-    // =========================
 }

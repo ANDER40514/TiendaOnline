@@ -78,30 +78,25 @@ function loadCart() {
 // =======================================
 // Fetch juegos
 // =======================================
-// =======================================
-// Fetch juegos y renderizado seguro
-// =======================================
 async function fetchJuegos() {
     try {
         const res = await fetch(API_JUEGOS);
         if (!res.ok) throw new Error(`HTTP ${res.status} - Error al cargar juegos`);
 
         const json = await res.json();
-        console.log("🚀 Juegos API raw response:", json);
 
-        // Asegurarse que sea array
         if (Array.isArray(json.data)) {
             juegos = json.data;
         } else if (Array.isArray(json)) {
             juegos = json;
         } else {
             juegos = [];
-            console.warn("⚠️ La API de juegos no retornó un array válido");
+            console.warn("La API de juegos no retornó un array válido");
         }
 
         renderJuegos();
     } catch (e) {
-        console.error("🚨 fetchJuegos error:", e);
+        console.error("fetchJuegos error:", e);
         const tbody = document.querySelector(".compra__catalog-table tbody");
         if (tbody)
             tbody.innerHTML = `<tr><td colspan="5">No se pudieron cargar los juegos.</td></tr>`;
@@ -168,7 +163,6 @@ async function checkStock(id, needed) {
         if (!res.ok) return false;
 
         const json = await res.json();
-        console.log("📦 Inventario recibido:", json);
 
         let item = null;
 
