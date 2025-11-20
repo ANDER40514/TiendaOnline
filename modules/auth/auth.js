@@ -1,21 +1,28 @@
 (() => {
     // =========================
+    // Detectar ruta base dinámica
+    // =========================
+    // Esto toma la primera parte de la ruta para proyectos en subcarpeta o raíz
+    const BASE_PATH = window.location.pathname.split('/').slice(0,2).join('/'); // "/" + "TiendaOnline"
+    const ORIGIN = window.location.origin;
+
+    // =========================
     // URLs de la API
     // =========================
-    const AUTH_URL = window.location.origin + "/TiendaOnline/api/controllers/AuthController.php";
-    const ROLES_URL = window.location.origin + "/TiendaOnline/api/index.php?endpoint=roles";
-    const LOGIN_PAGE = window.location.origin + "/TiendaOnline/modules/auth/login.php";
-    const HOME_PAGE = window.location.origin + "/TiendaOnline/index.php";
+    const AUTH_URL  = `${ORIGIN}/api/index.php?endpoint=clientes`;
+    const ROLES_URL = `${ORIGIN}/api/index.php?endpoint=roles`;
+    const LOGIN_PAGE = `${ORIGIN}/modules/auth/login.php`;
+    const HOME_PAGE  = `${ORIGIN}/index.php`;
 
     // =========================
     // Elementos del DOM
     // =========================
-    const formLogin = document.getElementById("login-form");
-    const formRegister = document.getElementById("register-form");
+    const formLogin       = document.getElementById("login-form");
+    const formRegister    = document.getElementById("register-form");
     const toggleRegisterBtn = document.getElementById("toggle-register");
-    const registerPanel = document.getElementById("register-panel");
-    const navRoot = document.getElementById("main-nav");
-    const selectRoles = document.getElementById("form__select");
+    const registerPanel     = document.getElementById("register-panel");
+    const navRoot           = document.getElementById("main-nav");
+    const selectRoles       = document.getElementById("form__select");
 
     // =========================
     // Funciones auxiliares
@@ -29,12 +36,12 @@
     function mostrarUsuarioNavbar() {
         if (!navRoot) return;
 
-        // limpiar previos
-        const prev = navRoot.querySelectorAll(".navbar__user-wrapper");
-        prev.forEach(n => n.remove());
+        // Limpiar previos
+        navRoot.querySelectorAll(".navbar__user-wrapper").forEach(n => n.remove());
 
         const raw = sessionStorage.getItem("user") || localStorage.getItem("tienda_user");
         const user = raw ? JSON.parse(raw) : null;
+
         const li = document.createElement("li");
         li.classList.add("navbar__user-wrapper");
 
@@ -48,6 +55,7 @@
                 </ul>
             `;
             navRoot.appendChild(li);
+
             const logout = li.querySelector("#logout-link");
             logout?.addEventListener("click", (e) => {
                 e.preventDefault();
@@ -62,7 +70,7 @@
                         sessionStorage.removeItem("user");
                         localStorage.removeItem("tienda_user");
                         localStorage.removeItem("token");
-                        fetch(window.location.origin + "/TiendaOnline/modules/auth/logout.php")
+                        fetch(`${BASE_PATH}/modules/auth/logout.php`)
                             .finally(() => location.href = LOGIN_PAGE);
                     }
                 });

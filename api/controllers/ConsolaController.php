@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../models/Consola.php';
+require_once __DIR__ . '/../models/ConsolaModel.php';
 
 class ConsolasController
 {
@@ -7,7 +7,7 @@ class ConsolasController
 
     public function __construct($db)
     {
-        $this->model = new Consola($db);
+        $this->model = new ConsolaModel($db);
 
         header('Content-Type: application/json; charset=UTF-8');
         header('Access-Control-Allow-Origin: *');

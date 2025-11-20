@@ -46,7 +46,7 @@
                     <div class="detalle__purchase-actions">
                         <button class="detalle__btn detalle__btn--add">Agregar al carrito</button>
                         <button class="detalle__btn detalle__btn--goto" 
-                                data-href="${BASE_URL}modules/Mantenimientos/compra-venta/compra-venta.php">
+                                data-href="${BASE_URL}modules/mantenimientos/compra-venta/compra-venta.php">
                             Ir al carrito
                         </button>
                     </div>
@@ -167,7 +167,7 @@
 
             if (gotoBtn)
                 gotoBtn.addEventListener("click", () => {
-                    window.location.href = `${BASE_URL}modules/Mantenimientos/compra-venta/compra-venta.php`;
+                    window.location.href = `${BASE_URL}modules/mantenimientos/compra-venta/compra-venta.php`;
                 });
 
         } catch (error) {

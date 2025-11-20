@@ -1,12 +1,12 @@
 // =======================================
 // Configuración API
 // =======================================
-const API_JUEGOS = "/TiendaOnline/api/index.php?endpoint=juegos";
-const API_INVENTARIO = "/TiendaOnline/api/index.php?endpoint=inventario";
-const API_CLIENTES = "/TiendaOnline/api/index.php?endpoint=clientes";
-const SUBMIT_ORDER =
-    "/TiendaOnline/modules/mantenimientos/compra-venta/submit_purchase.php";
-const LOGIN_PAGE = "/TiendaOnline/modules/auth/login.php";
+const ORIGIN = window.location.origin;
+const API_JUEGOS = `${ORIGIN}/api/index.php?endpoint=juegos`;
+const API_INVENTARIO = `${ORIGIN}/api/index.php?endpoint=inventario`;
+const API_CLIENTES = `${ORIGIN}/api/index.php?endpoint=clientes`;
+const SUBMIT_ORDER = `${ORIGIN}/modules/mantenimientos/compra-venta/submit_purchase.php`;
+const LOGIN_PAGE = `${ORIGIN}/modules/auth/login.php`;
 
 // =======================================
 // Variables globales
@@ -60,10 +60,6 @@ function ensureSession() {
     return true;
 }
 
-document.addEventListener("DOMContentLoaded", async () => {
-    if (!ensureSession()) return;
-});
-
 // =======================================
 // LocalStorage carrito
 // =======================================
@@ -82,58 +78,86 @@ function loadCart() {
 // =======================================
 // Fetch juegos
 // =======================================
+// =======================================
+// Fetch juegos y renderizado seguro
+// =======================================
 async function fetchJuegos() {
     try {
         const res = await fetch(API_JUEGOS);
-        if (!res.ok) throw new Error("Error al cargar juegos");
+        if (!res.ok) throw new Error(`HTTP ${res.status} - Error al cargar juegos`);
+
         const json = await res.json();
+        console.log("🚀 Juegos API raw response:", json);
+
         // Asegurarse que sea array
-        juegos = Array.isArray(json.data) ? json.data : [];
+        if (Array.isArray(json.data)) {
+            juegos = json.data;
+        } else if (Array.isArray(json)) {
+            juegos = json;
+        } else {
+            juegos = [];
+            console.warn("⚠️ La API de juegos no retornó un array válido");
+        }
+
         renderJuegos();
     } catch (e) {
-        console.error(e);
+        console.error("🚨 fetchJuegos error:", e);
         const tbody = document.querySelector(".compra__catalog-table tbody");
         if (tbody)
             tbody.innerHTML = `<tr><td colspan="5">No se pudieron cargar los juegos.</td></tr>`;
     }
 }
 
-// =======================================
-// Render catálogo
-// =======================================
 function renderJuegos() {
     const tbody = document.querySelector(".compra__catalog-table tbody");
     if (!tbody) return;
+
     tbody.innerHTML = "";
+
+    if (!juegos.length) {
+        tbody.innerHTML = `<tr><td colspan="5">No hay juegos disponibles.</td></tr>`;
+        return;
+    }
+
     juegos.forEach((j) => {
+        // Ajustar nombres según tu API real
+        const id = j.id_juego ?? j.id ?? 0;
+        const titulo = j.titulo ?? j.nombre ?? "Sin título";
+        const nombre_consola = j.nombre_consola ?? j.consola ?? "N/A";
+        const consola_color = j.consola_color ?? j.color ?? "#cccccc";
+        const precio = parseFloat(j.precio ?? 0).toFixed(2);
+
         const tr = document.createElement("tr");
         tr.innerHTML = `
-            <td>${j.id_juego}</td>
-            <td>${escapeHtml(j.titulo)}</td>
+            <td>${id}</td>
+            <td>${escapeHtml(titulo)}</td>
             <td>
                 <span class="compra__consola-tag" style="
-                    background:${escapeHtml(j.consola_color || "#cccccc")};
-                    color:${textColorByBg(j.consola_color || "#cccccc")};
+                    background:${escapeHtml(consola_color)};
+                    color:${textColorByBg(consola_color)};
                     padding:4px 8px;
                     border-radius:6px;
                     display:inline-block;
-                ">${escapeHtml(j.nombre_consola)}</span>
+                ">${escapeHtml(nombre_consola)}</span>
             </td>
-            <td>${fmt(j.precio)}</td>
-            <td><button data-id="${j.id_juego
-            }" class="compra__catalog-btn compra__catalog-btn--add">Agregar</button></td>
+            <td>${precio}</td>
+            <td>
+                <button data-id="${id}" class="compra__catalog-btn compra__catalog-btn--add">Agregar</button>
+            </td>
         `;
         tbody.appendChild(tr);
     });
 
-    document.querySelectorAll(".compra__catalog-btn--add").forEach((btn) => {
+    // Event listeners de botones
+    tbody.querySelectorAll(".compra__catalog-btn--add").forEach((btn) => {
         btn.addEventListener("click", async (e) => {
             const id = e.target.dataset.id;
-            if (!ensureSession()) return; // Redirige login si no hay sesión
+            if (!ensureSession()) return;
             await addToCart(id);
         });
     });
 }
+
 
 // =======================================
 // Check stock
@@ -142,14 +166,38 @@ async function checkStock(id, needed) {
     try {
         const res = await fetch(`${API_INVENTARIO}&id=${encodeURIComponent(id)}`);
         if (!res.ok) return false;
-        const data = await res.json();
-        const available = parseInt(data.cantidad || 0);
+
+        const json = await res.json();
+        console.log("📦 Inventario recibido:", json);
+
+        let item = null;
+
+        // Caso 1: API devuelve array → buscar en data[]
+        if (Array.isArray(json.data)) {
+            item = json.data.find(x => String(x.id_juego) === String(id));
+        }
+
+        // Caso 2: API devuelve un objeto → validar directamente
+        else if (json.data && typeof json.data === "object") {
+            if (String(json.data.id_juego) === String(id)) {
+                item = json.data;
+            }
+        }
+
+        if (!item) {
+            console.warn("⚠ No se encontró inventario para el id:", id);
+            return false;
+        }
+
+        const available = parseInt(item.cantidad || 0);
         return available >= needed;
+
     } catch (e) {
         console.error("Error consultando inventario", e);
         return false;
     }
 }
+
 
 // =======================================
 // Carrito
@@ -252,11 +300,9 @@ function renderCart() {
         tr.innerHTML = `
             <td>${escapeHtml(it.titulo)}</td>
             <td>${fmt(it.precio)}</td>
-            <td><input type="number" min="1" max="100" value="${it.cantidad
-            }" data-id="${it.id}" class="compra__cart-qty" /></td>
+            <td><input type="number" min="1" max="100" value="${it.cantidad}" data-id="${it.id}" class="compra__cart-qty" /></td>
             <td>${fmt(subtotal)}</td>
-            <td><button data-id="${it.id
-            }" class="compra__cart-remove">Quitar</button></td>
+            <td><button data-id="${it.id}" class="compra__cart-remove">Quitar</button></td>
         `;
         tbody.appendChild(tr);
     });
@@ -316,11 +362,10 @@ async function checkout() {
         });
 
         const text = await res.text();
-
         let json;
         try {
             json = JSON.parse(text);
-        } catch (e) {
+        } catch {
             throw new Error("La respuesta del servidor no es JSON válido");
         }
 
@@ -353,41 +398,38 @@ async function checkout() {
 // =======================================
 // Inicialización
 // =======================================
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+    if (!ensureSession()) return;
+
     loadCart();
-    fetchJuegos();
+    await fetchJuegos();
     renderCart();
 
-    document
-        .getElementById("realizar-compra")
-        ?.addEventListener("click", checkout);
+    document.getElementById("realizar-compra")?.addEventListener("click", checkout);
 
-    // Quitar del carrito
-    document
-        .querySelector(".compra__cart-table tbody")
-        ?.addEventListener("click", (e) => {
-            const btn = e.target.closest(".compra__cart-remove");
-            if (!btn) return;
-            const id = btn.dataset.id;
-            Swal.fire({
-                title: "Quitar producto",
-                text: "¿Deseas quitar este producto del carrito?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: "Sí, quitar",
-                cancelButtonText: "Cancelar",
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    removeFromCart(id);
-                    Swal.fire({
-                        toast: true,
-                        position: "top-end",
-                        icon: "success",
-                        title: "Producto quitado",
-                        showConfirmButton: false,
-                        timer: 1200,
-                    });
-                }
-            });
+    document.querySelector(".compra__cart-table tbody")?.addEventListener("click", (e) => {
+        const btn = e.target.closest(".compra__cart-remove");
+        if (!btn) return;
+        const id = btn.dataset.id;
+        Swal.fire({
+            title: "Quitar producto",
+            text: "¿Deseas quitar este producto del carrito?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Sí, quitar",
+            cancelButtonText: "Cancelar",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                removeFromCart(id);
+                Swal.fire({
+                    toast: true,
+                    position: "top-end",
+                    icon: "success",
+                    title: "Producto quitado",
+                    showConfirmButton: false,
+                    timer: 1200,
+                });
+            }
         });
+    });
 });
