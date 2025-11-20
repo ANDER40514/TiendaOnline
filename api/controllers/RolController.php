@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../models/Rol.php';
+require_once __DIR__ . '/../models/RolModel.php';
 
 class RolController
 {
@@ -7,55 +7,46 @@ class RolController
     {
         $method = $_SERVER['REQUEST_METHOD'];
 
-        switch ($method) {
-            case 'GET':
-                if ($id !== null) {
-                    $this->getById($id);
-                } else {
-                    $this->getAll();
-                }
-                break;
+        try {
+            switch ($method) {
+                case 'GET':
+                    $id !== null ? $this->getById($id) : $this->getAll();
+                    break;
 
-            case 'POST':
-                $input = json_decode(file_get_contents('php://input'), true);
-                $this->create($input);
-                break;
+                case 'POST':
+                    $input = json_decode(file_get_contents('php://input'), true);
+                    $this->create($input);
+                    break;
 
-            case 'PUT':
-                $input = json_decode(file_get_contents('php://input'), true);
-                if ($id !== null) {
-                    $this->update($id, $input);
-                } else {
-                    http_response_code(400);
-                    echo json_encode(['error' => 'Falta el ID del rol']);
-                }
-                break;
+                case 'PUT':
+                    $input = json_decode(file_get_contents('php://input'), true);
+                    $id !== null ? $this->update($id, $input)
+                        : $this->errorResponse('Falta el ID del rol', 400);
+                    break;
 
-            case 'DELETE':
-                if ($id !== null) {
-                    $this->delete($id);
-                } else {
-                    http_response_code(400);
-                    echo json_encode(['error' => 'Falta el ID del rol']);
-                }
-                break;
+                case 'DELETE':
+                    $id !== null ? $this->delete($id)
+                        : $this->errorResponse('Falta el ID del rol', 400);
+                    break;
 
-            case 'OPTIONS':
-                http_response_code(200);
-                echo json_encode(['ok' => true]);
-                break;
+                case 'OPTIONS':
+                    http_response_code(200);
+                    echo json_encode(['ok' => true]);
+                    break;
 
-            default:
-                http_response_code(405);
-                echo json_encode(['error' => 'Método no permitido']);
-                break;
+                default:
+                    $this->errorResponse('Método no permitido', 405);
+                    break;
+            }
+        } catch (\Exception $e) {
+            $this->errorResponse($e->getMessage(), 500);
         }
     }
 
     private function getAll()
     {
         $res = RolModel::obtenerTodos();
-        http_response_code($res['ok'] ? 200 : 404);
+        http_response_code($res['ok'] ? 200 : 400);
         echo json_encode($res, JSON_UNESCAPED_UNICODE);
     }
 
@@ -85,6 +76,13 @@ class RolController
         $res = RolModel::eliminar($id);
         http_response_code($res['ok'] ? 200 : 400);
         echo json_encode($res, JSON_UNESCAPED_UNICODE);
+    }
+
+    private function errorResponse(string $msg, int $code = 500)
+    {
+        http_response_code($code);
+        echo json_encode(['ok' => false, 'error' => $msg], JSON_UNESCAPED_UNICODE);
+        exit;
     }
 }
 ?>

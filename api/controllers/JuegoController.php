@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../models/Juego.php';
+require_once __DIR__ . '/../models/JuegoModel.php';
 
 class JuegoController
 {

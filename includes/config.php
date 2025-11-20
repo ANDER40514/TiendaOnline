@@ -1,16 +1,15 @@
 <?php
-
-
+// Detecta el protocolo automáticamente
 $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
 
+// Host (DNS, localhost o ngrok)
 $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
 
-$rootFolder = '/TiendaOnline/'; 
+// BASE_URL = solo la raíz del host
+define('BASE_URL', $protocol . '://' . $host . '/');
 
-define('BASE_PATH', __DIR__ . '/../..');
+// BASE_PATH = ruta absoluta del proyecto en el sistema de archivos
+define('BASE_PATH', realpath(__DIR__ . '/../..'));
 
-// BASE_URL apunta SIEMPRE al root del sitio
-define('BASE_URL', $protocol . '://' . $host . $rootFolder);
-
-// API_URL apunta al subdirectorio de API
+// API_URL = subdirectorio de API
 define('API_URL', BASE_URL . 'api/');

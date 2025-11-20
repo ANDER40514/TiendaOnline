@@ -1,7 +1,4 @@
 <?php
-// ====================================
-// CORS + CONFIGURACIÓN GLOBAL
-// ====================================
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 $isLocal = preg_match('/127\.0\.0\.1|localhost/', $origin);
 
@@ -45,7 +42,7 @@ require_once __DIR__ . '/config/database.php';
 require_once __DIR__ . '/controllers/ClienteController.php';
 require_once __DIR__ . '/controllers/RolController.php';
 require_once __DIR__ . '/controllers/JuegoController.php';
-require_once __DIR__ . '/models/Consola.php';
+require_once __DIR__ . '/models/ConsolaModel.php';
 
 $db = new Database();
 $conn = $db->connect();
@@ -62,12 +59,21 @@ switch ($endpoint) {
     // CLIENTES (Login / CRUD)
     // =======================
     case 'clientes':
-        require_once __DIR__ . '/models/Cliente.php';
+        require_once __DIR__ . '/models/ClienteModel.php';
+        $controller = new ClienteController();
+        $id = isset($_GET['id']) ? intval($_GET['id']) : null;
+        $controller->handleRequest($id);
+        break;
+
+        $controller->handleRequest($id);
+        break;
+        require_once __DIR__ . '/models/ClienteModel.php';
         $body = json_decode(file_get_contents('php://input'), true) ?? [];
 
         if ($method === 'GET') {
             if (isset($_GET['id'])) {
-                $res = ClienteModel::obtenerPorId((int)$_GET['id']);
+                $id = intval($_GET['id']);
+                $controller->obtenerClientePorId($id);
             } else {
                 $res = ClienteModel::obtenerTodos();
             }
@@ -87,7 +93,7 @@ switch ($endpoint) {
 
                 if ($auth['ok']) {
                     $_SESSION['user'] = $auth['user'];
-                    error_log("✅ Sesión creada: " . print_r($_SESSION, true));
+                    error_log("Sesión creada: " . print_r($_SESSION, true));
 
                     echo json_encode([
                         'ok' => true,
@@ -131,6 +137,7 @@ switch ($endpoint) {
         echo json_encode(['error' => 'Método no permitido']);
         break;
 
+
     // =======================
     // ROLES
     // =======================
@@ -144,7 +151,7 @@ switch ($endpoint) {
     // JUEGOS
     // =======================
     case 'juegos':
-        require_once __DIR__ . '/models/Juego.php';
+        require_once __DIR__ . '/models/JuegoModel.php';
         $data = json_decode(file_get_contents('php://input'), true) ?? [];
 
         if ($method === 'GET') {
@@ -171,34 +178,81 @@ switch ($endpoint) {
     // CONSOLAS
     // =======================
     case 'consolas':
-        $consola = new Consola($conn);
+        $consola = new ConsolaModel($conn);
         $data = json_decode(file_get_contents('php://input'), true) ?? [];
+        $id = isset($_GET['id']) ? (int)$_GET['id'] : null;
 
-        if ($method === 'GET') {
-            echo json_encode($consola->getAll());
-        } elseif ($method === 'POST') {
-            echo json_encode($consola->create($data));
-        } elseif ($method === 'PUT') {
-            $id = (int)($_GET['id'] ?? 0);
-            echo json_encode($consola->update($id, $data));
-        } elseif ($method === 'DELETE') {
-            $id = (int)($_GET['id'] ?? 0);
-            echo json_encode($consola->delete($id));
+        switch ($method) {
+            case 'GET':
+                if ($id) {
+                    $result = $consola->getById($id);
+                    if ($result) {
+                        echo json_encode([$result], JSON_UNESCAPED_UNICODE);
+                    } else {
+                        http_response_code(404);
+                        echo json_encode([]);
+                    }
+                } else {
+                    echo json_encode($consola->getAll(), JSON_UNESCAPED_UNICODE);
+                }
+                break;
+
+            case 'POST':
+                echo json_encode($consola->create($data), JSON_UNESCAPED_UNICODE);
+                break;
+
+            case 'PUT':
+                if (!$id) {
+                    http_response_code(400);
+                    echo json_encode(['error' => 'Falta el ID de la consola']);
+                    break;
+                }
+                echo json_encode($consola->update($id, $data), JSON_UNESCAPED_UNICODE);
+                break;
+
+            case 'DELETE':
+                if (!$id) {
+                    http_response_code(400);
+                    echo json_encode(['error' => 'Falta el ID de la consola']);
+                    break;
+                }
+                echo json_encode($consola->delete($id), JSON_UNESCAPED_UNICODE);
+                break;
+
+            default:
+                http_response_code(405);
+                echo json_encode(['error' => 'Método no permitido']);
+                break;
         }
         break;
+
 
     // =======================
     // INVENTARIO
     // =======================
-    case 'inventario':
-        require_once __DIR__ . '/controllers/InventarioController.php';
-        $controller = new InventarioController($conn);
-        $controller->handleRequest($method, $_GET['id'] ?? null);
+case 'inventario':
+    require_once __DIR__ . '/controllers/InventarioController.php';
+    require_once __DIR__ . '/models/InventarioModel.php';
+
+    $controller = new InventarioController($conn);
+
+    $id = isset($_GET['id']) ? intval($_GET['id']) : null;
+    $method = $_SERVER['REQUEST_METHOD'];
+
+    $controller->handleRequest($method, $id);
+    break;
+
+
+
+    case 'auth':
+        require_once __DIR__ . '/controllers/AuthController.php';
+        $controller = new AuthController();
+        $controller->handleRequest();
         break;
+
 
     default:
         http_response_code(404);
         echo json_encode(['error' => 'Endpoint no encontrado']);
         break;
 }
-?>

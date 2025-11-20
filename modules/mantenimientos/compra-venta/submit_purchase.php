@@ -2,6 +2,7 @@
 // =======================================
 // Compra - submit_purchase.php
 // =======================================
+error_log("SESION DEBUG: " . print_r($_SESSION, true));
 
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 $allowed_origins = ['http://127.0.0.1', 'http://localhost'];
@@ -24,9 +25,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 // =======================================
 // Configuración de sesión (unificada con login)
 // =======================================
-session_name('PHPSESSID');
-session_save_path(__DIR__ . '/../../../sessions'); // usa la misma carpeta que el login
+session_name("PHPSESSID");
+
+session_set_cookie_params([
+    'lifetime' => 0,
+    'path' => '/',     
+    'secure' => false,
+    'httponly' => false,
+    'samesite' => 'Lax'
+]);
+
+session_save_path('/var/www/html/TiendaOnline/sessions');
 session_start();
+
 
 // =======================================
 // Verificación de sesión

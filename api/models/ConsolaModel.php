@@ -2,7 +2,7 @@
 // models/Consola.php
 require_once __DIR__ . '/../config/database.php';
 
-class Consola
+class ConsolaModel
 {
     private $conn;
 

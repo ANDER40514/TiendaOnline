@@ -180,37 +180,37 @@
         const delBtn = e.target.closest(".admin-consola__delete");
 
         // ----- EDITAR -----
-        if (editBtn) {
-            const id = editBtn.dataset.id;
-            editingId = id;
+if (editBtn) {
+    const id = editBtn.dataset.id;
+    editingId = id;
 
-            try {
-                const res = await fetch(`${API}&id=${encodeURIComponent(id)}`);
-                if (!res.ok) throw new Error("Error " + res.status);
+    try {
+        const url = new URL(API);
+        url.searchParams.set("id", id); // agrega o reemplaza el id
+        const res = await fetch(url.toString());
+        if (!res.ok) throw new Error("Error " + res.status);
 
-                const data = await res.json();
-
-                // Asegurarnos que venga un array con al menos un elemento
-                if (!Array.isArray(data) || data.length === 0) {
-                    throw new Error("Consola no encontrada");
-                }
-
-                const consola = data[0];
-
-                fieldCode.value = consola.code || "";
-                fieldName.value = consola.nombre || "";
-                fieldColor.value = consola.consola_color || "#cccccc";
-
-                openPanel();
-            } catch (err) {
-                console.error(err);
-                Swal.fire({
-                    icon: "error",
-                    title: "Error",
-                    text: err.message || "No se pudo cargar la consola",
-                });
-            }
+        const data = await res.json();
+        if (!Array.isArray(data) || data.length === 0) {
+            throw new Error("Consola no encontrada");
         }
+
+        const consola = data[0];
+        fieldCode.value = consola.code || "";
+        fieldName.value = consola.nombre || "";
+        fieldColor.value = consola.consola_color || "#cccccc";
+
+        openPanel();
+    } catch (err) {
+        console.error(err);
+        Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: err.message || "No se pudo cargar la consola",
+        });
+    }
+}
+
 
         // ----- ELIMINAR -----
         if (delBtn) {
